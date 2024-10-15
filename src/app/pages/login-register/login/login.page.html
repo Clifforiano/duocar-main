@@ -1,0 +1,73 @@
+
+<ion-content>
+
+
+  <div class="ion-text-center">
+    <ion-img style="height: 250px; padding-top: 20px;"
+      src="../../../assets/image/logo.png"
+      alt="se callo la wea"
+    ></ion-img>
+  </div>
+
+
+<ion-card>
+<ion-card-content>
+
+  <form [formGroup]="formulario_login">
+
+ 
+
+  <ion-item>
+ 
+    <ion-input label="Email:" labelPlacement="floating" formControlName="email"></ion-input>
+  </ion-item>
+      <div *ngIf="formulario_login.get('email')?.touched && formulario_login.get('email')?.invalid">
+      <ion-text color="danger"  class="centrar_notificacion">
+        <ng-container class="centrar_notificacion" *ngIf="formulario_login.get('email')?.errors?.['required']" >El email es requerido.</ng-container>
+        <ng-container class="centrar_notificacion" *ngIf="formulario_login.get('email')?.errors?.['pattern']" >El email no es valido.</ng-container>
+      </ion-text>
+    </div>
+
+    <ion-item>
+      <ion-input label="Contraseña:" labelPlacement="floating" formControlName="password" [type]="hide ? 'password' : 'text'"></ion-input>
+      <ion-icon slot="end" [name]="hide ? 'eye-off' : 'eye'" (click)="hide = !hide"></ion-icon>
+    </ion-item>
+
+  <div *ngIf="formulario_login.get('password')?.touched && formulario_login.get('password')?.invalid">
+    <ion-text color="danger"  class="centrar_notificacion">
+      <ng-container class="centrar_notificacion" *ngIf="formulario_login.get('password')?.errors?.['required']" >La contraseña es requerida.</ng-container>
+      <ng-container class="centrar_notificacion" *ngIf="formulario_login.get('password')?.errors?.['minlength']" >La contraseña debe tener al menos 6 caracteres.</ng-container>
+      <ng-container class="centrar_notificacion" *ngIf="formulario_login.get('password')?.errors?.['maxlength']" >La contraseña debe tener como maximo 10 caracteres.</ng-container>
+    </ion-text>
+  </div>
+
+
+    <ion-button class="ion-padding" expand="block"  (click)="ingresar()" >Ingresar</ion-button>
+ 
+
+</form>
+
+
+  <div class="ion-text-center">
+    <ion-router-link routerLink="/recuperar-clave">
+      <ion-text style="color: darkblue;">
+        recuperar cuenta
+      </ion-text>
+    </ion-router-link>
+  </div>
+
+
+  <div class="ion-text-center ion-padding">
+    <ion-router-link routerLink="/register">
+      <ion-text style="color: darkblue;">
+        crear cuenta
+      </ion-text>
+    </ion-router-link>
+  </div>
+
+</ion-card-content>
+</ion-card>
+
+
+
+</ion-content>  

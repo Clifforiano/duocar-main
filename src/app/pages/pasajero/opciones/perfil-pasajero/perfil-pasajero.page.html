@@ -1,0 +1,58 @@
+<app-c-header [titulo]="'Mi Perfil'"></app-c-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-content>
+        <!-- Campo para Nombre -->
+
+        <form [formGroup]="formulario_perfil_pasajero">
+        <ion-item>
+          <ion-input label="Nombre:" placeholder="Juanito" formControlName="nombre" ></ion-input>
+        </ion-item>
+        <div *ngIf="formulario_perfil_pasajero.get('nombre')?.touched && formulario_perfil_pasajero.get('nombre')?.invalid">
+          <ion-text color="danger"  class="centrar_notificacion">
+            <ng-container class="centrar_notificacion" *ngIf="formulario_perfil_pasajero.get('nombre')?.errors?.['required']" >El nombre es requerido.</ng-container>
+            <ng-container class="centrar_notificacion" *ngIf="formulario_perfil_pasajero.get('nombre')?.errors?.['minlength']" >El nombre debe tener al menos 3 caracteres.</ng-container>
+            <ng-container class="centrar_notificacion" *ngIf="formulario_perfil_pasajero.get('nombre')?.errors?.['maxlength']" >El nombre debe tener como maximo 10 caracteres.</ng-container>
+            <ng-container class="centrar_notificacion" *ngIf="formulario_perfil_pasajero.get('nombre')?.errors?.['pattern']" >El nombre solo puede contener letras sin espacios.</ng-container>
+       
+          </ion-text>
+        </div>
+
+    
+        
+        <ion-button class="ion-padding" expand="block" type="button" (click)="cambiarnombre()"  >Cambiar Nombre</ion-button>
+
+        <!-- Campo para Apellido -->
+        <ion-item>
+          <ion-input label="Apellido:" placeholder="Juanez" formControlName="apellido" ></ion-input>
+        </ion-item>
+        <div *ngIf="formulario_perfil_pasajero.get('apellido')?.touched && formulario_perfil_pasajero.get('apellido')?.invalid">
+          <ion-text color="danger"  class="centrar_notificacion">
+            <ng-container class="centrar_notificacion" *ngIf="formulario_perfil_pasajero.get('apellido')?.errors?.['required']" >El apellido es requerido.</ng-container>
+            <ng-container class="centrar_notificacion" *ngIf="formulario_perfil_pasajero.get('apellido')?.errors?.['minlength']" >El apellido debe tener al menos 3 caracteres.</ng-container>
+            <ng-container class="centrar_notificacion" *ngIf="formulario_perfil_pasajero.get('apellido')?.errors?.['maxlength']" >El apellido debe tener como maximo 10 caracteres.</ng-container>
+            <ng-container class="centrar_notificacion" *ngIf="formulario_perfil_pasajero.get('apellido')?.errors?.['pattern']" >El apellido solo puede contener letras sin espacios.</ng-container>
+          </ion-text>
+        </div>
+        
+        <ion-button class="ion-padding" expand="block" type="button"  (click)="cambiarapellido()">Cambiar Apellido</ion-button>
+
+      </form>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+      <ion-router-link routerLink="/cambiarcorreo" color="dark" class="custom-router-link">       
+        <span>Cambiar correo</span>
+        <ion-icon name="chevron-forward" size="large"></ion-icon>
+      </ion-router-link>  
+
+      <ion-router-link routerLink="/cambiarclave" color="dark" class="custom-router-link">       
+        <span>Cambiar clave</span>
+        <ion-icon name="chevron-forward" size="large"></ion-icon>
+      </ion-router-link>  
+    </ion-card-content>
+  </ion-card>
+</ion-content>

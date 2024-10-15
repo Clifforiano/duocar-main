@@ -1,0 +1,26 @@
+// For information on how to create your own theme, please see:
+// http://ionicframework.com/docs/theming/
+
+ion-menu-button {
+    --color: #000 !important; /* Cambia esto al color deseado para el icono del menú */
+  }
+  
+  :root {
+    --ion-color-primary: #000; /* Color primario */
+    --ion-color-primary-rgb: 0,0,0; /* Color primario en formato RGB */
+    --ion-color-primary-contrast: #fff; /* Color de contraste sobre el primario */
+    
+    --ion-color-primary-light: #333; /* Color primario en estado activo o hover */
+    --ion-color-primary-light-rgb: 51,51,51; /* Color primario en estado activo o hover en formato RGB */
+    --ion-color-primary-light-contrast: #fff; /* Color de contraste sobre el primario en estado activo o hover */
+  }
+  
+  /* En tu archivo SCSS global (src/global.scss) o en el archivo SCSS del componente */
+
+ion-button {
+    --background: #000; /* Color de fondo del botón */
+    --color: #fff; /* Color del texto */
+    --background-activated: #333; /* Color de fondo del botón cuando está presionado */
+    --color-activated: #fff; /* Color del texto cuando el botón está presionado */
+    --font-weight: bold !important;
+  }
