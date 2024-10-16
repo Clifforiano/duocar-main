@@ -1,20 +1,48 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
+
+<div class="ion-page" id="main-content">
+  <ion-header>
+    <ion-toolbar class="ion-padding">
+      <ion-title><h3><strong>DuoCar</strong></h3></ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
-</ion-content>
+
+  <ion-content >
+    <div class="ion-padding">
+      <h2>Bienvenido a DuoCar</h2>
+      <p>Tu compañero ideal para viajar. Elige entre conducir o ser pasajero y disfruta de la experiencia.</p>
+      
+      <img src="../../../assets/image/toreto.jpg" alt="Bienvenido a DuoCar" style="width: 100%; border-radius: 8px;">
+    
+
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Promoción</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            ¡Reserva tu viaje hoy y recibe un 15% de descuento en tu siguiente viaje!
+          </ion-card-content>
+        </ion-card>
+
+
+        
+
+        <div>
+
+          <ion-tabs slot="bottom">
+            <ion-tab-bar>
+              <ion-tab-button tab="Conducir">
+                <ion-icon name="car"></ion-icon>
+                Conducir
+              </ion-tab-button>
+        
+              <ion-tab-button tab="pasajero">
+                <ion-icon name="person"></ion-icon>
+                Viajar
+              </ion-tab-button>
+            </ion-tab-bar>
+          </ion-tabs>
+        </div>
+
+</div>

@@ -1,27 +1,7 @@
-#container {
-  text-align: center;
 
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-}
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
-}
+.modi-1{
+  position: relative; /* Permite ajustar la posición vertical del texto */
+  left: 10px; /* Ajusta la posición vertical del texto; aumenta o disminuye este valor para alinear con el ícono */
+  }
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
-}
-
-#container a {
-  text-decoration: none;
-}
