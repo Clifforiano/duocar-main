@@ -4,20 +4,20 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { PerfilPasajeroPageRoutingModule } from './perfil-pasajero-routing.module';
+import { PasajeroPageRoutingModule } from './pasajero-routing.module';
 
-import { PerfilPasajeroPage } from './perfil-pasajero.page';
-import { SharedModule } from 'src/app/pages/shared/shared.module';
+import { PasajeroPage } from './pasajero.page';
+import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    PerfilPasajeroPageRoutingModule,
+    PasajeroPageRoutingModule,
     SharedModule,
     ReactiveFormsModule
   ],
-  declarations: [PerfilPasajeroPage]
+  declarations: [PasajeroPage]
 })
-export class PerfilPasajeroPageModule {}
+export class PasajeroPageModule {}

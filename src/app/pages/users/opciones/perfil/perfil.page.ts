@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, MaxLengthValidator, ReactiveFormsModule, Validators } from '@angular/forms';
 
+
 @Component({
-  selector: 'app-perfil-pasajero',
-  templateUrl: './perfil-pasajero.page.html',
-  styleUrls: ['./perfil-pasajero.page.scss'],
+  selector: 'app-perfil',
+  templateUrl: './perfil.page.html',
+  styleUrls: ['./perfil.page.scss'],
 })
-export class PerfilPasajeroPage implements OnInit {
+export class PerfilPage implements OnInit {
 
   formulario_perfil_pasajero: FormGroup;
   touchedNombre: boolean = false;
@@ -60,3 +61,4 @@ export class PerfilPasajeroPage implements OnInit {
   }
 
 }
+

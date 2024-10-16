@@ -12,14 +12,6 @@ const routes: Routes = [
 
 
   {
-    path: 'historial-pasajero',
-    loadChildren: () => import('./pages/pasajero/opciones/historial-pasajero/historial-pasajero.module').then( m => m.HistorialPasajeroPageModule)
-  },
-  {
-    path: 'perfil-pasajero',
-    loadChildren: () => import('./pages/pasajero/opciones/perfil-pasajero/perfil-pasajero.module').then( m => m.PerfilPasajeroPageModule)
-  },
-  {
     path: 'login',
     loadChildren: () => import('./pages/login-register/login/login.module').then( m => m.LoginPageModule)
   },
@@ -35,7 +27,24 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
+  },
+  {
+    path: 'perfil',
+    loadChildren: () => import('./pages/users/opciones/perfil/perfil.module').then( m => m.PerfilPageModule)
+  },
+  {
+    path: 'historial',
+    loadChildren: () => import('./pages/users/opciones/historial/historial.module').then( m => m.HistorialPageModule)
+  },  {
+    path: 'conductor',
+    loadChildren: () => import('./pages/users/conductor/conductor.module').then( m => m.ConductorPageModule)
+  },
+  {
+    path: 'pasajero',
+    loadChildren: () => import('./pages/users/pasajero/pasajero.module').then( m => m.PasajeroPageModule)
   }
+
+
 
  
 

@@ -1,11 +1,58 @@
+<ion-menu contentId="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <div class="ion-text-left ion-padding">
+        <h1>Juanito</h1>
+        <ion-router-link routerLink="/perfil">
+          Editar perfil
+        </ion-router-link>
+      </div>
+    </ion-toolbar>
+  </ion-header>
 
+  <ion-content>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12" class="icon-col">
+
+
+          <ion-router-link routerLink="/historial" color="dark" class="custom-router-link">
+            <ion-icon name="calendar" size="large"></ion-icon>
+            <span>Historial</span>
+          </ion-router-link>
+
+
+          <ion-router-link routerLink="/login" color="dark" class="custom-router-link">
+            <ion-icon name="exit" size="large"></ion-icon>
+            <span>Cerrar sesión</span>
+          </ion-router-link>
+
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-content>
+</ion-menu>
 
 <div class="ion-page" id="main-content">
   <ion-header>
-    <ion-toolbar class="ion-padding">
-      <ion-title><h3><strong>DuoCar</strong></h3></ion-title>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>DuoCar</ion-title>
     </ion-toolbar>
   </ion-header>
+
+<div class="ion-page" id="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>DuoCar</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
 
 
   <ion-content >
@@ -32,12 +79,12 @@
 
           <ion-tabs slot="bottom">
             <ion-tab-bar>
-              <ion-tab-button tab="Conducir">
+              <ion-tab-button routerLink="/conductor">
                 <ion-icon name="car"></ion-icon>
                 Conducir
               </ion-tab-button>
         
-              <ion-tab-button tab="pasajero">
+              <ion-tab-button routerLink="/pasajero">
                 <ion-icon name="person"></ion-icon>
                 Viajar
               </ion-tab-button>

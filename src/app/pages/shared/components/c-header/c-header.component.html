@@ -16,7 +16,7 @@
 
         <!-- Columna con el icono de la casa a la derecha -->
         <ion-col size="auto">
-            <ion-icon name="home" size="large" routerLink="/home" *ngIf="home"></ion-icon>
+             <ion-icon  (click)="goHome()" name="home" size="large"  *ngIf="home"></ion-icon>
         </ion-col>
       </ion-row>
     </ion-grid>

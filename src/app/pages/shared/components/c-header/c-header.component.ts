@@ -23,6 +23,10 @@ export class CHeaderComponent  implements OnInit {
     this.navCtrl.back();
     }
 
+    goHome() {
+      this.navCtrl.navigateRoot('/home');
+      }
+
   ngOnInit() {}
 
 }
