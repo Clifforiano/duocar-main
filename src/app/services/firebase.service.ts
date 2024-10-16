@@ -4,6 +4,7 @@ import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, up
 import { User } from '../models/user.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import {getFirestore,setDoc,doc, getDoc} from '@angular/fire/firestore';
+import { UtilsService } from './utils.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -11,6 +12,7 @@ export class FirebaseService {
 
   auth = inject(AngularFireAuth);
   firestore = inject(AngularFirestore);
+  utilsSvc=inject(UtilsService);
 
 
   //autentificacion//
@@ -40,6 +42,18 @@ export class FirebaseService {
   //recuperar contraseña
   sendRecoveryEmail(email: string) {
     return sendPasswordResetEmail(getAuth(), email);
+  }
+
+  //cerrar sesion
+
+  async signOut() {
+    try {
+      await getAuth().signOut();
+      localStorage.removeItem('user');
+      this.utilsSvc.routerLink('/login');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   }
 
   //base de datos

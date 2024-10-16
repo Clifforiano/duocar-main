@@ -6,6 +6,9 @@ import { LoadingController, ToastController, ToastOptions } from '@ionic/angular
   providedIn: 'root'
 })
 export class UtilsService {
+singOut() {
+  throw new Error('Method not implemented.');
+}
 
 lodingCtrl= inject(LoadingController)
 toastCtrl=inject(ToastController)

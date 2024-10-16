@@ -22,10 +22,14 @@
           </ion-router-link>
 
 
-          <ion-router-link routerLink="/login" color="dark" class="custom-router-link">
-            <ion-icon name="exit" size="large"></ion-icon>
+          <ion-router-link routerLink="home" color="dark" class="custom-router-link" (click)="signOut()">
+            <ion-icon name="exit" size="large" ></ion-icon>
             <span>Cerrar sesión</span>
           </ion-router-link>
+
+          <ion-button (click)="signOut()" expand="block" fill="clear" shape="round">
+            Click me
+          </ion-button>
 
         </ion-col>
       </ion-row>
