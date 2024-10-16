@@ -1,1 +1,56 @@
-<app-c-header [titulo]="'Pasajero'" [home]="false"></app-c-header>
+<app-c-header [titulo]="'Reservar'" [home]="false"></app-c-header>
+
+<ion-content padding>
+    <ion-grid>
+      <!-- Primer Elemento: ion-select -->
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-select label="Selecciona tu DuocUC" placeholder="DuocUC">
+              <ion-select-option value="Valdivia">Valdivia</ion-select-option>
+              <ion-select-option value="Concepcion">Concepcion</ion-select-option>
+              <ion-select-option value="Peru">Peru</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <!-- Segundo Elemento: ion-input -->
+      <ion-row>
+        <ion-col size="12">
+          <ion-input label="¿Dónde vas?" label-placement="floating" fill="solid" placeholder="Ingresa la dirección" class="modi-1"></ion-input>
+        </ion-col>
+      </ion-row>
+
+      <!-- Título: Viajes disponibles -->
+      <ion-row>
+        <ion-col size="12" class="ion-text-center">
+          <ion-title>Viajes disponibles</ion-title>
+        </ion-col>
+      </ion-row>
+
+      <!-- Lista de Tarjetas -->
+      <ion-row>
+        <ion-col size="12">
+          <div class="scrollable-container">
+            <ion-card>
+              <ion-card-header>
+                <ion-card-title class="ion-text-center">Juanito Perez</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <ion-card-subtitle>$3000</ion-card-subtitle>
+                <ion-text>Datos del viaje</ion-text>
+              </ion-card-content>
+              <ion-card-content>
+                <ion-router-link routerLink="/reserva" color="#fff">
+                  <ion-button expand="block">Reservar</ion-button>
+                </ion-router-link>
+              </ion-card-content>
+            </ion-card>
+
+            <!-- Agrega más tarjetas según sea necesario -->
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-content>
