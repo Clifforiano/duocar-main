@@ -1,34 +1,33 @@
-<app-c-header [titulo]="'Tu viaje'" ></app-c-header>
+<app-c-header [titulo]="'Tu viaje'"></app-c-header>
 
 <ion-content>
-
   <ion-card>
     <img alt="Silhouette of mountains" src="../../../assets/image/auto.jpg" />
     <ion-card-header>
       <ion-card-title class="ion-text-center">Confirma tu viaje</ion-card-title>
-
     </ion-card-header>
-  
-    <ion-card-content>
-      <form [formGroup]="formulario_asiento" >
 
-        <h2 class="ion-text-center ion-padding" >selecciona su asiento</h2>
+    <ion-card-content>
+      <!-- Usamos variables que se definirán en el archivo TS -->
+      <form [formGroup]="formulario_asiento">
+
+        <h2 class="ion-text-center ion-padding">Selecciona su asiento</h2>
         <ion-list>
           <ion-item>
-            <ion-select label="Seleccionado" placeholder="tu asiento" formControlName="asiento">
-              <ion-select-option value="1" >Asiento nro: 1</ion-select-option>
-              <ion-select-option value="2" >Asiento nro: 2</ion-select-option>
-              <ion-select-option value="3" >Asiento nro: 3</ion-select-option>
-              <ion-select-option value="4" >Asiento nro: 4  </ion-select-option>
+            <ion-select label="Seleccionado" placeholder="{{ asientoPlaceholder }}" formControlName="asiento">
+              <!-- Asientos dinámicos por ahora estáticos, pero listos para cambiar -->
+              <ion-select-option *ngFor="let asiento of asientos" [value]="asiento.value">
+                {{ asiento.label }}
+              </ion-select-option>
             </ion-select>
           </ion-item>
         </ion-list>
-          <ion-button expand="block" class="ion-padding" [disabled]="!formulario_asiento.valid" routerLink="/viaje-pasajero">
-            Reservar
-          </ion-button>
+
+        <ion-button expand="block" class="ion-padding" [disabled]="!formulario_asiento.valid" routerLink="/viaje-pasajero">
+          Reservar
+        </ion-button>
+
       </form>
     </ion-card-content>
   </ion-card>
-
-  
 </ion-content>

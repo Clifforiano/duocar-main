@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-confirmacion',
@@ -8,11 +8,27 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class ConfirmacionPage implements OnInit {
 
-  constructor() { }
+  formulario_asiento: FormGroup;
+  asientoPlaceholder: string = 'Selecciona tu asiento';
 
-  formulario_asiento: FormGroup = new FormGroup({
-    asiento: new FormControl('', [Validators.required])
-  });
+  // Definir asientos de forma estática para poder cambiar más adelante
+  asientos = [
+    { value: 1, label: 'Asiento nro: 1' },
+    { value: 2, label: 'Asiento nro: 2' },
+    { value: 3, label: 'Asiento nro: 3' },
+    { value: 4, label: 'Asiento nro: 4' }
+  ];
+
+
+
+  constructor(private formBuilder: FormBuilder) {
+
+    this.formulario_asiento = this.formBuilder.group({
+      asiento: ['', Validators.required]
+    });
+   }
+
+
   ngOnInit() {
   }
 
