@@ -7,7 +7,16 @@ const routes: Routes = [
   {
     path: '',
     component: PasajeroPage
+  },
+  {
+    path: 'confirmacion',
+    loadChildren: () => import('./confirmacion/confirmacion.module').then( m => m.ConfirmacionPageModule)
+  },  {
+    path: 'viaje-pasajero',
+    loadChildren: () => import('./viaje-pasajero/viaje-pasajero.module').then( m => m.ViajePasajeroPageModule)
   }
+
+
 ];
 
 @NgModule({

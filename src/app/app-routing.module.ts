@@ -35,13 +35,23 @@ const routes: Routes = [
   {
     path: 'historial',
     loadChildren: () => import('./pages/users/opciones/historial/historial.module').then( m => m.HistorialPageModule)
-  },  {
+  },
+  {
     path: 'conductor',
     loadChildren: () => import('./pages/users/conductor/conductor.module').then( m => m.ConductorPageModule)
   },
   {
     path: 'pasajero',
     loadChildren: () => import('./pages/users/pasajero/pasajero.module').then( m => m.PasajeroPageModule)
+  },
+  {
+    path: 'confirmacion',
+    loadChildren: () => import('./pages/users/pasajero/confirmacion/confirmacion.module').then( m => m.ConfirmacionPageModule)
+  },
+
+  {
+    path: 'viaje-pasajero',
+    loadChildren: () => import('./pages/users/pasajero/viaje-pasajero/viaje-pasajero.module').then( m => m.ViajePasajeroPageModule)
   }
 
 

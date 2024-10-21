@@ -13,6 +13,16 @@
   
     <ion-content>
       <ion-grid>
+
+        <ion-row>
+          <ion-col>
+            <ion-item lines="none">
+              <ion-icon name="car" slot="start" size="large"></ion-icon>
+              <ion-label>Tu viaje</ion-label>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+
         <ion-row>
           <ion-col>
             <ion-item lines="none">
@@ -29,6 +39,7 @@
             </ion-item>
           </ion-col>
         </ion-row>
+        
        
       </ion-grid>
     </ion-content>
@@ -84,6 +95,12 @@
               <ion-tab-button routerLink="/conductor">
                 <ion-icon name="car"></ion-icon>
                 Conducir
+              </ion-tab-button>
+
+
+              <ion-tab-button routerLink="/conductor">
+                <ion-icon name="navigate-circle"></ion-icon>
+                Tu viaje actual
               </ion-tab-button>
         
               <ion-tab-button routerLink="/pasajero">
