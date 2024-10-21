@@ -48,14 +48,13 @@ export class FirebaseService {
 
   async signOut() {
     try {
-      await getAuth().signOut();
-      localStorage.removeItem('user');
+      await this.getAuth().signOut();
+      localStorage.removeItem('user'); // Opcional si manejas datos adicionales
       this.utilsSvc.routerLink('/login');
     } catch (error) {
       console.error('Error signing out:', error);
     }
   }
-
   //base de datos
 
   setDocument(path: string, data: any) {
