@@ -6,6 +6,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import {getFirestore,setDoc,doc, getDoc} from '@angular/fire/firestore';
 import { UtilsService } from './utils.service';
 import { Auto } from '../models/auto.model';
+import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,6 +15,8 @@ export class FirebaseService {
   auth = inject(AngularFireAuth);
   firestore = inject(AngularFirestore);
   utilsSvc=inject(UtilsService);
+
+
 
 
   //autentificacion//
@@ -48,6 +51,10 @@ export class FirebaseService {
     return sendPasswordResetEmail(getAuth(), email);
   }
 
+  getAuthState(): Observable<any> {
+    return this.auth.authState; // Retorna un observable del estado de autenticación
+  }
+
 
   //cerrar sesion
 
@@ -78,11 +85,15 @@ export class FirebaseService {
   }
 
   //obtener autos de un usuario
-  async getAutosByUserId(userId: string) {
-    return await this.firestore
+  async getAutosByUserId(userId: string): Promise<Auto[]> {
+    const snapshot = await this.firestore
       .collection<Auto>('autos', ref => ref.where('uid', '==', userId))
       .get().toPromise();
+  
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Auto[];
   }
+  
+  
 
   //obtener el id del usuario actual
   getCurrentUserId(): string | null {
@@ -91,4 +102,8 @@ export class FirebaseService {
   }
 
   constructor() { }
-}
+
+
+  }
+
+  

@@ -1,13 +1,42 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>registro-vehiculo</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-c-header></app-c-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">registro-vehiculo</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title class="ion-text-center">Completa la Información del Auto</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <form (ngSubmit)="onSubmit()" [formGroup]="autoForm">
+        <ion-item>
+          <ion-label position="floating">Patente</ion-label>
+          <ion-input type="text" formControlName="patente" required></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Marca</ion-label>
+          <ion-input type="text" formControlName="marca" required></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Modelo</ion-label>
+          <ion-input type="text" formControlName="modelo" required></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Color</ion-label>
+          <ion-input type="text" formControlName="color" required></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Número de Asiento</ion-label>
+          <ion-input type="number" formControlName="nroasiento" required></ion-input>
+        </ion-item>
+
+        <ion-button expand="full" type="submit" [disabled]="autoForm.invalid" class="ion-padding" routerLink="/home">
+          Registrar Auto
+        </ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

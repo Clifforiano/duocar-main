@@ -28,7 +28,7 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule),
-    canActivate: [autoGuard]
+    
   },
   {
     path: 'perfil',
@@ -41,6 +41,7 @@ const routes: Routes = [
   {
     path: 'conductor',
     loadChildren: () => import('./pages/users/conductor/conductor.module').then( m => m.ConductorPageModule),
+    canActivate: [autoGuard]
     
   },
   {
@@ -55,7 +56,8 @@ const routes: Routes = [
   {
     path: 'viaje-pasajero',
     loadChildren: () => import('./pages/users/pasajero/viaje-pasajero/viaje-pasajero.module').then( m => m.ViajePasajeroPageModule)
-  },  {
+  },
+  {
     path: 'registro-vehiculo',
     loadChildren: () => import('./pages/users/opciones/registro-vehiculo/registro-vehiculo.module').then( m => m.RegistroVehiculoPageModule)
   },
