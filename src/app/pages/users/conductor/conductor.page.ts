@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Auto } from 'src/app/models/auto.model';
+import { FirebaseService } from 'src/app/services/firebase.service';
 
 @Component({
   selector: 'app-conductor',
@@ -7,9 +9,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ConductorPage implements OnInit {
 
-  constructor() { }
+
 
   ngOnInit() {
+
   }
+
 
 }

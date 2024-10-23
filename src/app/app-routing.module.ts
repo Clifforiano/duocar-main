@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { autoGuard } from './guards/auto.guard';
 
 
 const routes: Routes = [
@@ -26,7 +27,8 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
+    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule),
+    canActivate: [autoGuard]
   },
   {
     path: 'perfil',
@@ -38,7 +40,8 @@ const routes: Routes = [
   },
   {
     path: 'conductor',
-    loadChildren: () => import('./pages/users/conductor/conductor.module').then( m => m.ConductorPageModule)
+    loadChildren: () => import('./pages/users/conductor/conductor.module').then( m => m.ConductorPageModule),
+    
   },
   {
     path: 'pasajero',
@@ -52,7 +55,12 @@ const routes: Routes = [
   {
     path: 'viaje-pasajero',
     loadChildren: () => import('./pages/users/pasajero/viaje-pasajero/viaje-pasajero.module').then( m => m.ViajePasajeroPageModule)
-  }
+  },  {
+    path: 'registro-vehiculo',
+    loadChildren: () => import('./pages/users/opciones/registro-vehiculo/registro-vehiculo.module').then( m => m.RegistroVehiculoPageModule)
+  },
+
+  
 
 
 

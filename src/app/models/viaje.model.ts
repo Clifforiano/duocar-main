@@ -5,6 +5,7 @@ export interface Viaje {
     id_vehiculo: string;
     fecha: string; // Si es una fecha, puedes usar 'Date' en lugar de 'string'
     precio: number; // Debe ser number si vas a hacer cálculos
+    asiento: number;
     // Ubicación inicial
     latitudInicial: number; // Latitud debe ser de tipo number
     longitudInicial: number; // Longitud debe ser de tipo number

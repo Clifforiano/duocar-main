@@ -6,8 +6,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
+
 @NgModule({
-  declarations: [CHeaderComponent],
+  declarations: [CHeaderComponent ],
   exports: [CHeaderComponent],
   imports: [
     CommonModule,

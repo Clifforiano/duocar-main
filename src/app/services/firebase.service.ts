@@ -5,6 +5,7 @@ import { User } from '../models/user.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import {getFirestore,setDoc,doc, getDoc} from '@angular/fire/firestore';
 import { UtilsService } from './utils.service';
+import { Auto } from '../models/auto.model';
 @Injectable({
   providedIn: 'root'
 })
@@ -20,6 +21,9 @@ export class FirebaseService {
   getAuth() {
     return getAuth();
   }
+ //usuario acutal
+
+
 
   //login
   signIn(user: User) {
@@ -44,6 +48,7 @@ export class FirebaseService {
     return sendPasswordResetEmail(getAuth(), email);
   }
 
+
   //cerrar sesion
 
   async signOut() {
@@ -63,6 +68,26 @@ export class FirebaseService {
 
    async getDocument(path: string) {
     return  (await getDoc(doc(getFirestore(), path))).data();
+  }
+
+  //autos
+
+  //crear auto
+  async createAuto(auto: Auto) {
+    return await this.firestore.collection('autos').add(auto);
+  }
+
+  //obtener autos de un usuario
+  async getAutosByUserId(userId: string) {
+    return await this.firestore
+      .collection<Auto>('autos', ref => ref.where('uid', '==', userId))
+      .get().toPromise();
+  }
+
+  //obtener el id del usuario actual
+  getCurrentUserId(): string | null {
+    const user = getAuth().currentUser;
+    return user ? user.uid : null;
   }
 
   constructor() { }

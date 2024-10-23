@@ -9,6 +9,7 @@ import { ConductorPageRoutingModule } from './conductor-routing.module';
 import { ConductorPage } from './conductor.page';
 import { SharedModule } from '../../shared/shared.module';
 
+
 @NgModule({
   imports: [
     CommonModule,
@@ -16,7 +17,8 @@ import { SharedModule } from '../../shared/shared.module';
     IonicModule,
     ConductorPageRoutingModule,
     SharedModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    
   ],
   declarations: [ConductorPage]
 })
