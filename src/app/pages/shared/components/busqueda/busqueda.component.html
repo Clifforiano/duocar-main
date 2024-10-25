@@ -1,34 +1,46 @@
 <ion-card>
-
   <form [formGroup]="busquedaForm">
-  <ion-item>
-    <ion-select placeholder="Selecciona Su DuocUC" (ionChange)="seleccionarCampus($event.detail.value)" formControlName="inicio">
-      <ion-select-option *ngFor="let campus of campusDuoc" [value]="campus">{{ campus.nombre }}</ion-select-option>
-    </ion-select>
-  
-  </ion-item>
+    <!-- Input para la dirección de inicio -->
+    
+ 
+    
+    <ion-input
+      class="ion-padding"
+      placeholder="Ingrese su punto de partida..."
+      [value]="direccionInicio"
+      (ionInput)="onSearch($event, 'inicio')"
+      formControlName="inicio"
+    >
+      <ion-icon slot="end" name="pin" size="large" (click)="obtenerDireccionActual()"></ion-icon> <!-- Añadido el evento click aquí -->
+    </ion-input>
 
-  <!-- Input para la dirección de fin -->
-  <ion-input
-    class="ion-padding"
-    placeholder="Ingrese su destino..."
-    [value]="direccionFin"
-    (ionInput)="onSearch($event, 'fin')"
-    formControlName="fin"
-  ><ion-icon slot="end" name="home" size="large"></ion-icon></ion-input>
+    <!-- Lista de resultados para la dirección de inicio -->
+    <ion-list *ngIf="searchResultsInicio.length > 0">
+      <ion-item *ngFor="let result of searchResultsInicio" (click)="onSelectResult(result, 'inicio')">
+        {{ result.display_name }}
+      </ion-item>
+    </ion-list>
 
-  <!-- Lista de resultados para la dirección de fin -->
-  <ion-list *ngIf="searchResultsFin.length > 0">
-    <ion-item *ngFor="let result of searchResultsFin" (click)="onSelectResult(result, 'fin')">
-      {{ result.display_name }}
-    </ion-item>
-  </ion-list>
+   
+    
+    <!-- Input para la dirección de fin -->
+    <ion-input
+      class="ion-padding"
+      placeholder="Ingrese su destino..."
+      [value]="direccionFin"
+      (ionInput)="onSearch($event, 'fin')"
+      formControlName="fin"
+    ><ion-icon slot="end" name="home" size="large"></ion-icon></ion-input>
 
-  <ion-button (click)="buscar()" expand="block" class="ion-padding" [disabled]="!busquedaForm.valid">
-    Buscar
-  </ion-button>
-  
+    <!-- Lista de resultados para la dirección de fin -->
+    <ion-list *ngIf="searchResultsFin.length > 0">
+      <ion-item *ngFor="let result of searchResultsFin" (click)="onSelectResult(result, 'fin')">
+        {{ result.display_name }}
+      </ion-item>
+    </ion-list>
 
-</form>
-
+    <ion-button (click)="buscar()" expand="block" class="ion-padding" [disabled]="!busquedaForm.valid || !direccionInicioSeleccionada">
+      Buscar
+    </ion-button>
+  </form>
 </ion-card>
