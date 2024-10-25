@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, input, Input, OnInit } from '@angular/core';
 import { NominatimService } from 'src/app/services/nominatim.service';
 import { DireccionesService } from 'src/app/services/direcciones.service'; // Importa el servicio
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -15,7 +15,7 @@ export class BusquedaComponent implements OnInit {
    busquedaForm: FormGroup;
 
    // Declaración de variables
-
+   @Input() nombreBoton!: string;
    fechainicio: string;
    horainicio: string;
    direccionInicio: string = '';

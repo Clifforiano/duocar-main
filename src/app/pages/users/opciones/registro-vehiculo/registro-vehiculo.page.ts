@@ -25,7 +25,7 @@ export class RegistroVehiculoPage implements OnInit {
       marca: ['', Validators.required],
       modelo: ['', Validators.required],
       color: ['', Validators.required],
-      nroasiento: [null, [Validators.required, Validators.min(1)]],
+      nroasiento: [null, [Validators.required, Validators.min(1), Validators.max(4)]],
     });
   }
 
