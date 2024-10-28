@@ -2,7 +2,60 @@
 
 <ion-content>
 
-<app-busqueda [nombreBoton]="'Publicar'"></app-busqueda>
+<ion-card>
+    <ion-card-header>
+        <ion-card-title class="ion-text-center">Publicar viaje</ion-card-title>
+    </ion-card-header>
+    <form [formGroup]="busquedaForm">
+      <!-- Input para la dirección de inicio -->
+      <ion-input
+        class="ion-padding"
+        placeholder="Ingrese su punto de partida..."
+        [value]="direccionInicio"
+        (ionInput)="onSearch($event, 'inicio')"
+        formControlName="inicio"
+      >
+        <ion-icon slot="end" name="pin" size="large" (click)="obtenerDireccionActual()"></ion-icon> <!-- Añadido el evento click aquí -->
+      </ion-input>
+  
+      <!-- Lista de resultados para la dirección de inicio -->
+      <ion-list *ngIf="searchResultsInicio.length > 0">
+        <ion-item *ngFor="let result of searchResultsInicio" (click)="onSelectResult(result, 'inicio')">
+          {{ result.display_name }}
+        </ion-item>
+      </ion-list>
+  
+     
+      
+      <!-- Input para la dirección de fin -->
+      <ion-input
+        class="ion-padding"
+        placeholder="Ingrese su destino..."
+        [value]="direccionFin"
+        (ionInput)="onSearch($event, 'fin')"
+        formControlName="fin"
+      ><ion-icon slot="end" name="home" size="large"></ion-icon></ion-input>
+  
+      <!-- Lista de resultados para la dirección de fin -->
+      <ion-list *ngIf="searchResultsFin.length > 0">
+        <ion-item *ngFor="let result of searchResultsFin" (click)="onSelectResult(result, 'fin')">
+          {{ result.display_name }}
+        </ion-item>
+      </ion-list>
 
-
+      <ion-input 
+      class="ion-padding"
+      type="number"
+      formControlName="precio" 
+      [value]="precio_viaje"
+      placeholder="Ingrese el precio del viaje"
+      
+      > <ion-icon slot="end" name="cash" size="large"></ion-icon></ion-input>
+  
+      <ion-button (click)="buscar()" expand="block" class="ion-padding" [disabled]="!busquedaForm.valid || !direccionInicioSeleccionada">
+       Publicar
+      </ion-button>
+    </form>
+  </ion-card>
+  
 </ion-content>

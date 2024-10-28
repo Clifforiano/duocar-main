@@ -6,7 +6,7 @@ import { AngularFirestore } from '@angular/fire/compat/firestore';
 import {getFirestore,setDoc,doc, getDoc} from '@angular/fire/firestore';
 import { UtilsService } from './utils.service';
 import { Auto } from '../models/auto.model';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -52,9 +52,13 @@ export class FirebaseService {
   }
 
   getAuthState(): Observable<any> {
-    return this.auth.authState; // Retorna un observable del estado de autenticación
+    return this.auth.authState.pipe(
+      map(authState => {
+        const userData = this.utilsSvc.getLocalStore('user');
+        return authState && userData ? authState : null; // Retorna el objeto authState si ambos están presentes, si no retorna null
+      })
+    );
   }
-
 
   //cerrar sesion
 
