@@ -40,7 +40,7 @@ export class ConductorPage implements OnInit {
      this.busquedaForm = this.formBuilder.group({
        inicio: ['', Validators.required],
        fin: ['', Validators.required],
-       precio: ['', Validators.required, Validators.min(1), Validators.max(4)],
+       precio: ['', Validators.required, Validators.min(1000), Validators.max(999999)],
      });
  
      // Suscribirse al Subject para buscar resultados
