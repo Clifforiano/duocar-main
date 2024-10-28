@@ -1,11 +1,11 @@
+import { Reserva } from "./reserva.model";
+
 export interface Viaje {
-    id_viaje: string;
+    id_viaje?: string;
     id_conductor: string;
-    id_pasajero: string;
     patente: string;
-    fecha: Date; // Si es una fecha, puedes usar 'Date' en lugar de 'string'
+    fecha: string; // Si es una fecha, puedes usar 'Date' en lugar de 'string'
     precio: number; // Debe ser number si vas a hacer cálculos
-    asiento: number;
     // Ubicación inicial
     dirrecionInicio: string;
     horaInicio: string; // Hora en formato de fecha
@@ -14,4 +14,6 @@ export interface Viaje {
     horaFinal: string; // Hora en formato de fecha
 
     estado: string;
+
+    reservas?: Reserva[]; 
 }

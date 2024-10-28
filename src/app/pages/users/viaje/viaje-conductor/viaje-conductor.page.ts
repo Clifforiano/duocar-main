@@ -28,7 +28,7 @@ export class ViajeConductorPage implements OnInit {
     console.log('Usuarios confirmados:', usuariosSeleccionados);
     // Lógica adicional para confirmar el viaje, como enviar los datos al servidor
     this.utilsSvc.presentToast({
-      message: 'Viaje confirmado',
+      message: 'Viaje Finalizado',
       duration: 1500,
       color: 'success',
       position:'middle',
@@ -43,6 +43,7 @@ export class ViajeConductorPage implements OnInit {
   }
 
   ngOnInit() {
+    const viajeId = 'ID_DEL_VIAJE';
   }
 
 }

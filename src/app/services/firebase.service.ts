@@ -96,8 +96,12 @@ export class FirebaseService {
   
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Auto[];
   }
-  
-  
+  //obtener patente
+  getPatente(uid: string): Observable<Auto | undefined> {
+    return this.firestore.collection<Auto>('autos', ref => ref.where('uid', '==', uid).limit(1)).valueChanges().pipe(
+      map(patentes => patentes[0]) // Obtiene el primer auto (si existe)
+    );
+  }
 
   //obtener el id del usuario actual
   getCurrentUserId(): string | null {
@@ -105,9 +109,14 @@ export class FirebaseService {
     return user ? user.uid : null;
   }
 
-  constructor() { }
-
+  idusuario(){
+    return getAuth().currentUser?.uid;
 
   }
 
+
+  constructor() { }
+
+
   
+}
