@@ -60,7 +60,11 @@ const routes: Routes = [
   {
     path: 'registro-vehiculo',
     loadChildren: () => import('./pages/users/opciones/registro-vehiculo/registro-vehiculo.module').then( m => m.RegistroVehiculoPageModule)
+  },  {
+    path: 'viaje-conductor',
+    loadChildren: () => import('./pages/users/viaje/viaje-conductor/viaje-conductor.module').then( m => m.ViajeConductorPageModule)
   },
+
 
   
 

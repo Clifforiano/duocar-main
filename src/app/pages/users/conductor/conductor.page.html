@@ -60,7 +60,7 @@
       </div>
     
   
-      <ion-button (click)="buscar()" expand="block" class="ion-padding" [disabled]="!busquedaForm.valid || !direccionInicioSeleccionada">
+      <ion-button (click)="buscar()" expand="block" class="ion-padding" [disabled]="!busquedaForm.valid || !direccionInicioSeleccionada" routerLink="/viaje-conductor">
        Publicar
       </ion-button>
     </form>
