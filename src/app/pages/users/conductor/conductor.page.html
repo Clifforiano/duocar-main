@@ -52,6 +52,13 @@
       placeholder="Ingrese el precio del viaje"
       
       > <ion-icon slot="end" name="cash" size="large"></ion-icon></ion-input>
+      <div *ngIf="busquedaForm.get('precio')?.invalid && busquedaForm.get('precio')?.touched" class="centrar_notificacion">
+        <ion-text color="danger"  class="centrar_notificacion">
+          <ng-container class="centrar_notificacion" *ngIf="busquedaForm.get('precio')?.errors?.['required']" >El precio es requerido.</ng-container>
+          <ng-container class="centrar_notificacion" *ngIf="busquedaForm.get('precio')?.errors?.['min']" >El precio debe ser mayor a 1000.</ng-container>
+        </ion-text>
+      </div>
+    
   
       <ion-button (click)="buscar()" expand="block" class="ion-padding" [disabled]="!busquedaForm.valid || !direccionInicioSeleccionada">
        Publicar
