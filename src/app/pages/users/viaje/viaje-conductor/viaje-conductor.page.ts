@@ -11,10 +11,7 @@ export class ViajeConductorPage implements OnInit {
   utilsSvc=inject(UtilsService);
 
   usuarios = [
-    { nombre: 'Usuario 1', seleccionado: false },
-    { nombre: 'Usuario 2', seleccionado: false },
-    { nombre: 'Usuario 3', seleccionado: false },
-    // Agrega más usuarios según sea necesario
+
   ];
 
   

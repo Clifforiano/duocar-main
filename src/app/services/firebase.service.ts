@@ -80,7 +80,12 @@ export class FirebaseService {
    async getDocument(path: string) {
     return  (await getDoc(doc(getFirestore(), path))).data();
   }
-
+//obtener nombre de usuario
+  getUserName(){
+    const user = getAuth().currentUser;
+    return user?.displayName;
+  }
+  
   //autos
 
   //crear auto
@@ -96,6 +101,10 @@ export class FirebaseService {
   
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Auto[];
   }
+
+
+  
+
   //obtener patente
   getPatente(uid: string): Observable<Auto | undefined> {
     return this.firestore.collection<Auto>('autos', ref => ref.where('uid', '==', uid).limit(1)).valueChanges().pipe(
@@ -112,7 +121,9 @@ export class FirebaseService {
   idusuario(){
     return getAuth().currentUser?.uid;
 
+  
   }
+  //obtener nombre de usuario
 
 
   constructor() { }

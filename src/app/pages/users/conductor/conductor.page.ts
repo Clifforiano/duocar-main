@@ -21,9 +21,8 @@ export class ConductorPage implements OnInit {
   //se crea el viaje
 
   nuevoViaje: Viaje = {
-    id_viaje: '', 
+    id_viaje: '',
     id_conductor: '',
-    patente: '',
     fecha: '',
     precio: 0,
     dirrecionInicio: '',
@@ -32,12 +31,23 @@ export class ConductorPage implements OnInit {
     horaFinal: '',
     estado: 'Iniciado',
     reservas: [
-      {id_pasajero: '1', asiento: 2},
-      {id_pasajero: '2', asiento: 3},
-
+      { id_pasajero: '1', asiento: 2 },
+      { id_pasajero: '2', asiento: 3 },
     ],
+    autos: [],
   };
 
+  // auto
+  async cargarauto() {
+    try {
+      const autos = await this.fireBaseSvc.getAutosByUserId(this.fireBaseSvc.idusuario());
+      console.log('Autos cargados:', autos); // Para depuración
+      this.nuevoViaje.autos = autos;
+    } catch (error) {
+      console.error('Error al cargar autos:', error);
+    }
+  }
+  
   //VALORES VIAJE
    
   //ID CONDUCTOR
@@ -45,27 +55,9 @@ export class ConductorPage implements OnInit {
     this.nuevoViaje.id_conductor = this.fireBaseSvc.idusuario()
   }
 
-
-  //PATENTE
-cargarPatente(uid: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    this.fireBaseSvc.getPatente(uid).subscribe(
-      (patente) => {
-        if (patente) {
-          this.nuevoViaje.patente = patente.patente;
-          resolve();
-        } else {
-          console.warn('No se encontró ninguna patente para este usuario.');
-          reject('Patente no encontrada');
-        }
-      },
-      (error) => {
-        console.error('Error al cargar la patente:', error);
-        reject(error);
-      }
-    );
-  });
-}
+  //NOMBRE CONDUCTOR
+  
+ 
 
   //FECHA  Y HORA INICIO
 
@@ -143,12 +135,7 @@ cargarPatente(uid: string): Promise<void> {
 
   ngOnInit() {
     this.obtenerFechaHora();
-    const uid = this.fireBaseSvc.idusuario(); // Obtén el UID del usuario actual
-    if (uid) {
-      this.cargarPatente(uid); // Cargar la patente del usuario
-    } else {
-      console.warn('No hay usuario autenticado.');
-    }
+
 
     
     // No es necesario obtener la dirección actual aquí
@@ -205,16 +192,15 @@ cargarPatente(uid: string): Promise<void> {
     }
   }
   async buscar() {
-  
-
     if (this.busquedaForm.valid && this.direccionInicioSeleccionada) {
       // Cargar los valores del viaje
       this.cargarIdConductor();
-      await this.cargarPatente(this.fireBaseSvc.idusuario()); // Asegúrate de manejar la suscripción correctamente
       this.obtenerFechaHora();
       this.cargarPrecioViaje();
       this.cargarDirecciones();
       
+      // Esperar a que se carguen los autos
+      await this.cargarauto();
   
       // Luego, crea el viaje en la base de datos
       try {
@@ -223,13 +209,12 @@ cargarPatente(uid: string): Promise<void> {
       } catch (error) {
         console.error('Error al crear el nuevo viaje:', error);
       }
-    
-  
     }
+  }
+  
   }
   
 
 
 
 
-}

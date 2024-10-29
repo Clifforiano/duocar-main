@@ -1,9 +1,9 @@
+import { Auto } from "./auto.model";
 import { Reserva } from "./reserva.model";
 
 export interface Viaje {
     id_viaje?: string;
     id_conductor: string;
-    patente: string;
     fecha: string; // Si es una fecha, puedes usar 'Date' en lugar de 'string'
     precio: number; // Debe ser number si vas a hacer cálculos
     // Ubicación inicial
@@ -14,6 +14,8 @@ export interface Viaje {
     horaFinal: string; // Hora en formato de fecha
 
     estado: string;
+    
+    autos: Auto[];   
 
     reservas?: Reserva[]; 
 }

@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { addDoc, collection, Firestore } from 'firebase/firestore';
 import { Viaje } from '../models/viaje.model';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Reserva } from '../models/reserva.model';
+import { Auto } from '../models/auto.model';
 
 @Injectable({
   providedIn: 'root'
@@ -44,5 +45,23 @@ loadReservas(viaje: Viaje): Observable<Reserva[]> {
   return this.firestore.collection<Reserva>('reservas', ref => ref.where('id_viaje', '==', viaje.id_viaje)).valueChanges();
 }
 
+
+obtenerViajesFiltrados(inicio: string, fin: string): Observable<Viaje[]> {
+  return this.firestore
+    .collection<Viaje>('viajes', ref =>
+      ref.where('dirrecionInicio', '==', inicio).where('dirrecionFinal', '==', fin)
+    )
+    .valueChanges();
+}
+
+
+obtenerAutoPorPatente(patente: string): Observable<Auto | undefined> {
+  return this.firestore
+    .collection<Auto>('autos', (ref) => ref.where('patente', '==', patente))
+    .valueChanges()
+    .pipe(
+      map((autos) => autos[0]) // Obtén el primer auto que coincida con la patente
+    );
+}
 
 }
