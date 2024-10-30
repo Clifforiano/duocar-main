@@ -7,6 +7,7 @@ import { DateService } from 'src/app/services/date.service';
 import { DireccionesService } from 'src/app/services/direcciones.service';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { NominatimService } from 'src/app/services/nominatim.service';
+import { ReservaService } from 'src/app/services/reserva.service';
 import { ViajeService } from 'src/app/services/viaje.service';
 
 @Component({
@@ -31,6 +32,7 @@ export class PasajeroPage implements OnInit {
   datesSvc = inject(DateService)
   fireBaseSvc = inject(FirebaseService)
   viajeSvc = inject(ViajeService)
+  reservaSvc= inject(ReservaService)
 
 
   // Resultados de búsqueda
@@ -43,17 +45,23 @@ export class PasajeroPage implements OnInit {
   reservas: Reserva[] = [];
 
   //obtener id viaje
-
+obtenerIdViaje() {
+  
+  this.viajeSvc.obtenerIdFiltrados(this.direccionInicio, this.direccionFin).subscribe((viajes) => {
+    // Filtrar los viajes que no tienen estado 'terminado'
+    this.nuevareserva.id_viaje = viajes[0].id_viaje;
+  })
+}
  
   //obtener id pasajero
   obtenerIdPasajero() {
-    return this.fireBaseSvc.getCurrentUserId();
+   this.nuevareserva.id_pasajero = this.fireBaseSvc.getCurrentUserId();
   }
 
   //obtener nro asiento
 
   obtenerAsiento(asiento: number) {
-    this.asientoSeleccionado = asiento;
+    this.nuevareserva.asiento = this.asientoSeleccionado = asiento;
   }
 
   // Subject para la búsqueda
@@ -153,15 +161,18 @@ export class PasajeroPage implements OnInit {
     }
   }
 
+  nuevareserva : Reserva = {
+    id_pasajero: '',
+    id_viaje: '',
+    asiento: 0
+  }
   reservar(){
-
-    this.viajeSvc.obtenerIdFiltrados(this.direccionInicio, this.direccionFin).subscribe((viajes) => {
-      // Filtrar los viajes que no tienen estado 'terminado'
-      return console.log(viajes);
-    })
     
-      
+   this.obtenerIdViaje();
+   this.obtenerAsiento(this.asientoSeleccionado);
+   this.obtenerIdPasajero();
 
+   console.log(this.nuevareserva);
 
   }
 }
