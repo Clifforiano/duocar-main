@@ -34,6 +34,8 @@ export class ViajeService {
       });
   }
 
+
+
   // Método para obtener todos los viajes
   obtenerViajes() {
     return this.firestore.collection<Viaje>('viajes').valueChanges();
@@ -53,6 +55,21 @@ obtenerViajesFiltrados(inicio: string, fin: string): Observable<Viaje[]> {
     )
     .valueChanges();
 }
+
+
+obtenerIdFiltrados(inicio: string, fin: string): Observable<{ id_viaje: string }[]> {
+  return this.firestore
+    .collection<Viaje>('viajes', ref =>
+      ref.where('dirrecionInicio', '==', inicio).where('dirrecionFinal', '==', fin)
+    )
+    .get()
+    .pipe(
+      map(snapshot => {
+        return snapshot.docs.map(doc => ({ id_viaje: doc.id })); // Devuelve un objeto con la propiedad id_viaje
+      })
+    );
+}
+
 
 
 obtenerAutoPorPatente(patente: string): Observable<Auto | undefined> {

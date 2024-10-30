@@ -10,6 +10,7 @@ import { NominatimService } from 'src/app/services/nominatim.service';
 import { ViajeService } from 'src/app/services/viaje.service';
 
 
+
 @Component({
   selector: 'app-conductor',
   templateUrl: './conductor.page.html',
@@ -31,10 +32,12 @@ export class ConductorPage implements OnInit {
     horaFinal: '',
     estado: 'Iniciado',
     reservas: [
-      { id_pasajero: '1', asiento: 2 },
-      { id_pasajero: '2', asiento: 3 },
+      { id_pasajero: '1', asiento: 2, id_viaje: '1' },
+      { id_pasajero: '2', asiento: 3, id_viaje: '1' },
     ],
     autos: [],
+    hora_partida: '',
+    nom_conductor: ''
   };
 
   // auto
@@ -46,6 +49,12 @@ export class ConductorPage implements OnInit {
     } catch (error) {
       console.error('Error al cargar autos:', error);
     }
+  }
+  //nombre conductor
+  cargarNomConductor() {
+    this.nuevoViaje.nom_conductor = this.fireBaseSvc.getUserName();
+    console.log(this.nuevoViaje.nom_conductor);
+    return this.nuevoViaje.nom_conductor
   }
   
   //VALORES VIAJE
@@ -78,6 +87,18 @@ export class ConductorPage implements OnInit {
     this.nuevoViaje.dirrecionFinal = this.busquedaForm.get('fin')?.value;
   }
 
+  //hora partida
+  cargarHoraPartida() {
+    const horaCompleta = this.busquedaForm.get('horaPartida')?.value; // Valor completo
+    if (horaCompleta) {
+      // Extraer solo la hora en formato HH:mm
+      const fecha = new Date(horaCompleta);
+      const horas = fecha.getHours().toString().padStart(2, '0');
+      const minutos = fecha.getMinutes().toString().padStart(2, '0');
+      this.nuevoViaje.hora_partida = `${horas}:${minutos}`; // Formato HH:mm
+    }
+  }
+  
 
 
 
@@ -92,6 +113,8 @@ export class ConductorPage implements OnInit {
   direccionInicio: string = '';
   direccionFin: string = '';
   direccionInicioSeleccionada: boolean = false; // Para habilitar el botón
+  direccionFinSeleccionada: boolean = false; // Para habilitar el botón
+
 
   // Inyección de dependencias
   direccionesSvc = inject(DireccionesService);
@@ -116,6 +139,7 @@ export class ConductorPage implements OnInit {
         '',
         [Validators.required, Validators.min(1000), Validators.max(999999)]
       ],
+      horaPartida: ['', Validators.required],
     });
 
     // Suscribirse al Subject para buscar resultados
@@ -133,9 +157,13 @@ export class ConductorPage implements OnInit {
     });
   }
 
+
+
+
   ngOnInit() {
     this.obtenerFechaHora();
-
+    const hora_partida = this.busquedaForm.value.horaPartida;
+ 
 
     
     // No es necesario obtener la dirección actual aquí
@@ -174,23 +202,24 @@ export class ConductorPage implements OnInit {
       }
     }
   }
-
   onSelectResult(result: any, tipo: string) {
     if (tipo === 'inicio') {
-      if (this.searchResultsInicio.includes(result)) {
-        this.direccionInicio = result.display_name;
-        this.busquedaForm.get('inicio')?.setValue(this.direccionInicio); // Actualiza el formulario
-        this.direccionInicioSeleccionada = true; // Marca que la dirección de inicio es válida
-      }
-      this.searchResultsInicio = [];
+        if (this.searchResultsInicio.includes(result)) {
+            this.direccionInicio = result.display_name;
+            this.busquedaForm.get('inicio')?.setValue(this.direccionInicio); // Actualiza el formulario
+            this.direccionInicioSeleccionada = true; // Marca que la dirección de inicio es válida
+        }
+        this.searchResultsInicio = [];
     } else if (tipo === 'fin') {
-      if (this.searchResultsFin.includes(result)) {
-        this.direccionFin = result.display_name;
-        this.busquedaForm.get('fin')?.setValue(this.direccionFin); // Actualiza el formulario
-      }
-      this.searchResultsFin = [];
+        if (this.searchResultsFin.includes(result)) {
+            this.direccionFin = result.display_name;
+            this.busquedaForm.get('fin')?.setValue(this.direccionFin); // Actualiza el formulario
+            this.direccionFinSeleccionada = true; // Marca que la dirección de fin es válida
+        }
+        this.searchResultsFin = [];
     }
-  }
+}
+
   async buscar() {
     if (this.busquedaForm.valid && this.direccionInicioSeleccionada) {
       // Cargar los valores del viaje
@@ -198,7 +227,8 @@ export class ConductorPage implements OnInit {
       this.obtenerFechaHora();
       this.cargarPrecioViaje();
       this.cargarDirecciones();
-      
+      this.cargarHoraPartida();
+      this.cargarNomConductor();
       // Esperar a que se carguen los autos
       await this.cargarauto();
   

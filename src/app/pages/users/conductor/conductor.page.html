@@ -58,12 +58,29 @@
           <ng-container class="centrar_notificacion" *ngIf="busquedaForm.get('precio')?.errors?.['min']" >El precio debe ser mayor a 1000.</ng-container>
         </ion-text>
       </div>
-    
-  
-      <ion-button (click)="buscar()" expand="block" class="ion-padding" [disabled]="!busquedaForm.valid || !direccionInicioSeleccionada" routerLink="/viaje-conductor">
+
+      <ion-item class="ion-padding">
+        <ion-label><p>Seleccione la hora de partida</p></ion-label>
+        <ion-datetime 
+          displayFormat="HH:mm"
+          presentation="time"
+          formControlName="horaPartida">
+        </ion-datetime>
+        <ion-text color="danger" *ngIf="busquedaForm.get('horaPartida').invalid && busquedaForm.get('horaPartida').touched">
+          La hora de partida es requerida.
+        </ion-text>
+      </ion-item>
+
+      
+
+      <ion-button (click)="buscar()" expand="block" class="ion-padding" [disabled]="!busquedaForm.valid || !direccionInicioSeleccionada || !direccionFinSeleccionada  " routerLink="/viaje-conductor">
        Publicar
+      </ion-button>
+
+      <ion-button (click)="cargarNomConductor()" expand="block" fill="clear" shape="round">
+        Click me
       </ion-button>
     </form>
   </ion-card>
-  
+
 </ion-content>

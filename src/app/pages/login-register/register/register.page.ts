@@ -70,6 +70,7 @@ export class RegisterPage implements OnInit {
       this.firebaseSvc.signUp(this.formulario_register.value as User).then(res => {
         let uid = res.user.uid;
         this.formulario_register.controls['uid'].setValue(uid);
+        this.firebaseSvc.updateUser(this.formulario_register.value['nombre']);
         this.setUserInfo(uid);
         console.log(res);
 

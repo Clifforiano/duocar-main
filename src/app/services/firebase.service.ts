@@ -81,11 +81,19 @@ export class FirebaseService {
     return  (await getDoc(doc(getFirestore(), path))).data();
   }
 //obtener nombre de usuario
-  getUserName(){
-    const user = getAuth().currentUser;
-    return user?.displayName;
+
+getUserName() {
+  const user = getAuth().currentUser;
+  if (user) {
+      console.log('Usuario autenticado:', user.displayName);
+      return user.displayName; 
+  } else {
+      console.log('No hay usuario autenticado.');
+      return null; // O un valor por defecto
   }
-  
+}
+
+
   //autos
 
   //crear auto
