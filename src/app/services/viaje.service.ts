@@ -83,6 +83,4 @@ obtenerAutoPorPatente(patente: string): Observable<Auto | undefined> {
 }
 
 
-
-
 }

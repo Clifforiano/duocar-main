@@ -32,12 +32,12 @@ export class ConductorPage implements OnInit {
     horaFinal: '',
     estado: 'Iniciado',
     reservas: [
-      { id_reserva: '1',id_pasajero: '1', asiento: 2, id_viaje: '1' },
-      {id_reserva: '2', id_pasajero: '2', asiento: 3, id_viaje: '1' },
+      { id_reserva: '1', id_pasajero: '1', id_viaje: '1' },
+      { id_reserva: '2', id_pasajero: '2', id_viaje: '1' },
     ],
     autos: [],
     hora_partida: '',
-    nom_conductor: ''
+    nom_conductor: '',
   };
 
   // auto
@@ -99,6 +99,7 @@ export class ConductorPage implements OnInit {
     }
   }
   
+//dar valor asiento
 
 
 

@@ -84,15 +84,7 @@
                   <h2>Fecha: {{ viaje.fecha || 'No especificada' }}</h2>
                   <h2>Hora: {{ viaje.horaInicio }}</h2>
 
-                  <ion-item>
-        
-                    <ion-select [(ngModel)]="asientoSeleccionado"  label="Seleccione un asiento">
-                      <ion-icon slot="start" name="car"></ion-icon>
-                      <ion-select-option *ngFor="let asiento of [].constructor(auto.nroasiento); let i = index">
-                        Asiento {{ i + 1 }}
-                      </ion-select-option>
-                    </ion-select>
-                  </ion-item>
+
 
               
 
@@ -113,6 +105,5 @@
       
 
       </ion-grid>
-      <ion-button expand="block" (click)="reservar()">Reservar</ion-button>
 
     </ion-content>

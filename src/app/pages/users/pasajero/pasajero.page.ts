@@ -63,10 +63,6 @@ export class PasajeroPage implements OnInit {
 
   //obtener nro asiento
 
-  obtenerAsiento(asiento: number) {
-    this.nuevareserva.asiento = this.asientoSeleccionado = asiento;
-  }
-
   // Subject para la búsqueda
   searchSubject: Subject<{ query: string; tipo: string }> = new Subject();
 
@@ -160,24 +156,37 @@ export class PasajeroPage implements OnInit {
     const fin = this.busquedaForm.get('fin')?.value;
 
     if (this.busquedaForm.valid) {
+      
       this.viajeSvc.obtenerViajesFiltrados(inicio, fin).subscribe((viajes) => {
         // Filtrar los viajes que no tienen estado 'terminado'
         this.viajesDisponibles = viajes.filter(viaje => viaje.estado !== 'terminado');
-        console.log(this.viajesDisponibles);
+        if (this.viajesDisponibles.length === 0) {
+         this.utilsSvc.presentToast({
+           message: 'No hay viajes disponibles',
+           duration: 3000 ,
+           color: 'danger',
+           position:'middle',
+         })
+        }
         loading.dismiss();
       });
-
+    }
     }
     
-  }
+
 
   nuevareserva : Reserva = {
     id_reserva: '',
     id_pasajero: '',
     id_viaje: '',
-    asiento: 0
   }
+
+
   reservar() {
+    
+    
+    
+    
     this.obtenerIdPasajero();
     
     // Llama a obtenerIdViaje y cualquier otra función que devuelva un Observable
@@ -185,7 +194,6 @@ export class PasajeroPage implements OnInit {
       this.obtenerIdViaje(),
       // Otras llamadas que necesites
     ]).subscribe(() => {
-      this.obtenerAsiento(this.asientoSeleccionado);
       this.reservaSvc.guardarReserva(this.nuevareserva);
       console.log(this.nuevareserva);
     });

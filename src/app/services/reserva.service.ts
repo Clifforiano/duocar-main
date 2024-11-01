@@ -20,7 +20,6 @@ export class ReservaService {
     return addDoc(reservasRef, {
         id_pasajero: reserva.id_pasajero,
         id_viaje: reserva.id_viaje,
-        asiento: reserva.asiento
     }).then(async (docRef) => {
         // Actualizar la reserva con el ID generado
         const updatedReserva = { ...reserva, id_reserva: docRef.id };
@@ -35,5 +34,4 @@ export class ReservaService {
         throw error;
     });
 }
-
 }

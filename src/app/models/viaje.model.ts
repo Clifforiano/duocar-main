@@ -17,7 +17,6 @@ export interface Viaje {
     hora_partida: string;
 
     estado: string;
-    
     autos: Auto[];   
 
     reservas?: Reserva[]; 
