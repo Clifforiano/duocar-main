@@ -1,6 +1,6 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, forkJoin, map, Subject, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, forkJoin, map, Observable, Subject, switchMap } from 'rxjs';
 import { Reserva } from 'src/app/models/reserva.model';
 import { Viaje } from 'src/app/models/viaje.model';
 import { DateService } from 'src/app/services/date.service';
@@ -8,6 +8,7 @@ import { DireccionesService } from 'src/app/services/direcciones.service';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { NominatimService } from 'src/app/services/nominatim.service';
 import { ReservaService } from 'src/app/services/reserva.service';
+import { UtilsService } from 'src/app/services/utils.service';
 import { ViajeService } from 'src/app/services/viaje.service';
 
 @Component({
@@ -33,6 +34,7 @@ export class PasajeroPage implements OnInit {
   fireBaseSvc = inject(FirebaseService)
   viajeSvc = inject(ViajeService)
   reservaSvc= inject(ReservaService)
+  utilsSvc = inject(UtilsService);
 
 
   // Resultados de búsqueda
@@ -45,13 +47,14 @@ export class PasajeroPage implements OnInit {
   reservas: Reserva[] = [];
 
   //obtener id viaje
-obtenerIdViaje() {
-  
-  this.viajeSvc.obtenerIdFiltrados(this.direccionInicio, this.direccionFin).subscribe((viajes) => {
-    // Filtrar los viajes que no tienen estado 'terminado'
-    this.nuevareserva.id_viaje = viajes[0].id_viaje;
-  })
-}
+  obtenerIdViaje(): Observable<void> {
+    return this.viajeSvc.obtenerIdFiltrados(this.direccionInicio, this.direccionFin).pipe(
+      map((viajes) => {
+        // Filtrar los viajes que no tienen estado 'terminado'
+        this.nuevareserva.id_viaje = viajes[0].id_viaje;
+      })
+    );
+  }
  
   //obtener id pasajero
   obtenerIdPasajero() {
@@ -149,6 +152,10 @@ obtenerIdViaje() {
       this.searchResultsFin = [];
     }
   } async buscar() {
+    
+    const loading = await this.utilsSvc.loading();
+    await loading.present();
+    
     const inicio = this.busquedaForm.get('inicio')?.value;
     const fin = this.busquedaForm.get('fin')?.value;
 
@@ -157,24 +164,30 @@ obtenerIdViaje() {
         // Filtrar los viajes que no tienen estado 'terminado'
         this.viajesDisponibles = viajes.filter(viaje => viaje.estado !== 'terminado');
         console.log(this.viajesDisponibles);
+        loading.dismiss();
       });
+
     }
+    
   }
 
   nuevareserva : Reserva = {
+    id_reserva: '',
     id_pasajero: '',
     id_viaje: '',
     asiento: 0
   }
-  reservar(){
+  reservar() {
+    this.obtenerIdPasajero();
     
-   this.obtenerIdViaje();
-   this.obtenerAsiento(this.asientoSeleccionado);
-   this.obtenerIdPasajero();
-
-   console.log(this.nuevareserva);
-
+    // Llama a obtenerIdViaje y cualquier otra función que devuelva un Observable
+    forkJoin([
+      this.obtenerIdViaje(),
+      // Otras llamadas que necesites
+    ]).subscribe(() => {
+      this.obtenerAsiento(this.asientoSeleccionado);
+      this.reservaSvc.guardarReserva(this.nuevareserva);
+      console.log(this.nuevareserva);
+    });
   }
 }
-
-

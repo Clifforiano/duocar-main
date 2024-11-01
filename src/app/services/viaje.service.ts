@@ -10,6 +10,7 @@ import { Auto } from '../models/auto.model';
   providedIn: 'root'
 })
 export class ViajeService {
+  firebaseService: any;
 
 
   constructor(private firestore: AngularFirestore) {}
@@ -80,5 +81,8 @@ obtenerAutoPorPatente(patente: string): Observable<Auto | undefined> {
       map((autos) => autos[0]) // Obtén el primer auto que coincida con la patente
     );
 }
+
+
+
 
 }
