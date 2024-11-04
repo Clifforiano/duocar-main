@@ -45,6 +45,7 @@ export class PasajeroPage implements OnInit {
   //reseva coleccion
 
   reservas: Reserva[] = [];
+  utils: any;
 
   //obtener id viaje
   obtenerIdViaje(): Observable<void> {
@@ -183,19 +184,41 @@ export class PasajeroPage implements OnInit {
 
 
   reservar() {
-    
-    
-    
-    
     this.obtenerIdPasajero();
-    
+
     // Llama a obtenerIdViaje y cualquier otra función que devuelva un Observable
     forkJoin([
       this.obtenerIdViaje(),
       // Otras llamadas que necesites
     ]).subscribe(() => {
-      this.reservaSvc.guardarReserva(this.nuevareserva);
-      console.log(this.nuevareserva);
+      this.reservaSvc.guardarReserva(this.nuevareserva).then(() => {
+
+        this.utilsSvc.presentToast({
+          message: 'Reserva guardada correctamente',
+          duration: 1500 ,
+          color: 'success',
+          position:'middle',
+        })
+
+      }).catch((error) => {
+       
+        this.utilsSvc.presentToast({
+          message: 'Error al guardar la reserva: ' + error.message,
+          duration: 2000 ,
+          color: 'danger',
+          position:'middle',
+        })
+
+      });
+    }, (error) => {
+      this.utilsSvc.presentToast({
+        message: 'Error al obtener el viaje: ' + error.message,
+        duration: 2000 ,
+        color: 'danger',
+        position:'middle',
+      })
     });
   }
+
+
 }
