@@ -49,7 +49,9 @@ export class RegisterPage implements OnInit {
         Validators.minLength(3),
         Validators.maxLength(10),
         Validators.pattern("^[a-zA-Z]+$")
-      ]]
+      ]],
+      estado: ['', []  
+      ]
     })
 
 
@@ -97,46 +99,41 @@ export class RegisterPage implements OnInit {
   }
 
 
-  async setUserInfo(uid:String) {
-
+  async setUserInfo(uid: string) {
     const loading = await this.utilsSvc.loading();
     await loading.present();
-    
-
+  
     if (this.formulario_register.valid) {
-      let path='users/${uid}';
+      const path = `users/${uid}`; // Uso de backticks
+  
+      // Elimina la contraseña antes de guardar
       delete this.formulario_register.value['password'];
-
-
-      this.firebaseSvc.setDocument(path, this.formulario_register.value ).then(async res => {
-        this.utilsSvc.saveLocalStore('user',this.formulario_register.value);
-        this.utilsSvc.routerLink('/home');
-        this.formulario_register.reset();
-
-        console.log(res);
-
-      }).catch(error => {
-        console.log(error);
-
-        this.utilsSvc.presentToast({
-          message: error.message,
-          duration: 2000,
-          color: 'danger',
-          position:'middle',
-          icon: 'alert-circle-outline',
+  
+      // Asegúrate de que el método setDocument esté configurado correctamente
+      this.firebaseSvc.setDocument(path, this.formulario_register.value, { merge: true })
+        .then(async res => {
+          this.utilsSvc.saveLocalStore('user', this.formulario_register.value);
+          this.utilsSvc.routerLink('/home');
+          this.formulario_register.reset();
+          console.log(res);
         })
-
-
-      }).finally(() => {  
-        loading.dismiss();
-      })
-      
-    }else {
-      this.formulario_register.markAllAsTouched();
+        .catch(error => {
+          console.error(error);
+          this.utilsSvc.presentToast({
+            message: error.message,
+            duration: 2000,
+            color: 'danger',
+            position: 'middle',
+            icon: 'alert-circle-outline',
+          });
+        })
+        .finally(() => {
+          loading.dismiss();
+        });
+    } else {
       loading.dismiss();
     }
   }
-
  
 
 }

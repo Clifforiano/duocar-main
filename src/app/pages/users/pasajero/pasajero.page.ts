@@ -192,6 +192,7 @@ export class PasajeroPage implements OnInit {
       // Otras llamadas que necesites
     ]).subscribe(() => {
       this.reservaSvc.guardarReserva(this.nuevareserva).then(() => {
+        this.fireBaseSvc.updateEstadoToConductorForCurrentUser('Pasajero');
 
         this.utilsSvc.presentToast({
           message: 'Reserva guardada correctamente',

@@ -4,6 +4,8 @@ import { addDoc, collection, doc, getFirestore, setDoc } from 'firebase/firestor
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Observable } from 'rxjs';
 import { UtilsService } from './utils.service';
+import { Viaje } from '../models/viaje.model';
+import * as firebase from 'firebase/compat';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +14,7 @@ export class ReservaService {
   constructor(private firestore: AngularFirestore) {}
 
   utilsSvc = inject(UtilsService);
+
 
   // Método para guardar una reserva en Firestore
   async guardarReserva(reserva: Reserva) {
@@ -104,5 +107,6 @@ export class ReservaService {
     }
   }
 
-  
+
+
 }

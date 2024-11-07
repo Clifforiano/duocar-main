@@ -38,7 +38,7 @@ export class FirebaseService {
   signUp(user: User) {
     return createUserWithEmailAndPassword(getAuth(), user.email, user.password);
   }
-
+// cambiar estado
 
   //actualizar usuario
 
@@ -73,7 +73,7 @@ export class FirebaseService {
   }
   //base de datos
 
-  setDocument(path: string, data: any) {
+  setDocument(path: string, data: any, p0: { merge: boolean; }) {
     return setDoc(doc(getFirestore(), path), data); 
   }
 
@@ -91,6 +91,49 @@ getUserName() {
       console.log('No hay usuario autenticado.');
       return null; // O un valor por defecto
   }
+}
+//cambiar estado
+
+updateEstadoToConductorForCurrentUser(estado : string) {
+  this.auth.currentUser.then(user => {
+    if (user) {
+      const uid = user.uid;
+      this.firestore.collection('users').doc(uid).update({
+        estado: estado
+      }).then(() => {
+        console.log('Estado del usuario actualizado a conductor');
+      }).catch((error) => {
+        console.error('Error al actualizar el estado:', error);
+      });
+    } else {
+      console.log('No hay usuario autenticado');
+    }
+  });
+}
+
+//obtener estado
+
+getEstadoOfCurrentUser(): Observable<string | null> {
+  return new Observable(observer => {
+    this.auth.currentUser.then(user => {
+      if (user) {
+        const uid = user.uid;
+        this.firestore.collection<User>('users').doc(uid).get().subscribe(doc => {
+          if (doc.exists) {
+            const data = doc.data() as User; // Usa el tipo User
+            observer.next(data.estado || null); // Devuelve el estado del usuario o null si no existe
+          } else {
+            observer.next(null); // Si no existe el documento
+          }
+        }, error => {
+          console.error('Error al consultar el estado:', error);
+          observer.next(null); // Manejo de error
+        });
+      } else {
+        observer.next(null); // No hay usuario autenticado
+      }
+    });
+  });
 }
 
 

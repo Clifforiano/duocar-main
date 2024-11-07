@@ -7,6 +7,7 @@ import { DateService } from 'src/app/services/date.service';
 import { DireccionesService } from 'src/app/services/direcciones.service';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { NominatimService } from 'src/app/services/nominatim.service';
+import { UtilsService } from 'src/app/services/utils.service';
 import { ViajeService } from 'src/app/services/viaje.service';
 
 
@@ -122,6 +123,7 @@ export class ConductorPage implements OnInit {
   datesSvc = inject(DateService)
   fireBaseSvc = inject(FirebaseService)
   viajeSvc = inject(ViajeService)
+  utilsSvc = inject(UtilsService)
 
 
   // Resultados de búsqueda
@@ -236,9 +238,25 @@ export class ConductorPage implements OnInit {
       // Luego, crea el viaje en la base de datos
       try {
         const viajeId = await this.viajeSvc.guardarViaje(this.nuevoViaje);
-        console.log('Nuevo viaje creado con ID:', viajeId);
+        this.fireBaseSvc.updateEstadoToConductorForCurrentUser('Conductor');
+
+        this.utilsSvc.presentToast({
+          message: 'Viaje creado con exito',
+          color: 'success',
+          position: 'middle',
+          duration: 2000,
+          icon: 'checkmark-circle-outline',
+
+        })
+       
       } catch (error) {
-        console.error('Error al crear el nuevo viaje:', error);
+        this.utilsSvc.presentToast({
+          message: 'Error al crear el viaje: ' + error.message,
+          color: 'danger',
+          position: 'middle',
+          duration: 2000,
+          icon: 'alert-circle-outline',
+        })
       }
     }
   }

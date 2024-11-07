@@ -81,23 +81,34 @@
 
         <div>
 
+
+
           <ion-tabs slot="bottom">
             <ion-tab-bar>
+
+              
+
               <ion-tab-button routerLink="/conductor">
                 <ion-icon name="car"></ion-icon>
                 Conducir
               </ion-tab-button>
 
 
-              <ion-tab-button routerLink="/conductor">
+ 
+              <ion-tab-button (click)="irViaje()">
                 <ion-icon name="navigate-circle"></ion-icon>
                 Tu viaje actual
               </ion-tab-button>
+
+ 
         
               <ion-tab-button routerLink="/pasajero">
                 <ion-icon name="person"></ion-icon>
                 Viajar
               </ion-tab-button>
+
+          
+
             </ion-tab-bar>
           </ion-tabs>
         </div>

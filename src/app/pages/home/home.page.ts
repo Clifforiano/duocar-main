@@ -23,4 +23,14 @@ export class HomePage implements OnInit {
     this.firebaseSvc.signOut(); // Cambia 'singOut' a 'signOut'
   }
 
+  irViaje(){
+    this.firebaseSvc.getEstadoOfCurrentUser().subscribe(estado => {
+      if (estado === 'Conductor') {
+        this.utilsSvc.routerLink('/viaje-conductor');
+      } else if (estado === 'Pasajero') {
+        this.utilsSvc.routerLink('/viaje-pasajero');
+      }
+    })
+  }
+
 }

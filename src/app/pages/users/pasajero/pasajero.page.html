@@ -48,7 +48,7 @@
           
         
       
-          <ion-button (click)="buscar()" expand="block" class="ion-padding" [disabled]="!busquedaForm.valid || !direccionInicioSeleccionada" >
+          <ion-button (click)="buscar()" expand="block" class="ion-padding" [disabled]="!busquedaForm.valid || !direccionInicioSeleccionada"  >
             Buscar
           </ion-button>
         </form>
@@ -95,7 +95,7 @@
 
 
       
-                  <ion-button expand="block" (click)="reservar()">Reservar</ion-button>
+                  <ion-button expand="block" (click)="reservar()" routerLink="/viaje-pasajero">Reservar </ion-button>
               
               </ion-card-content>
             </ion-card>
