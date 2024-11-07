@@ -60,6 +60,8 @@ export class FirebaseService {
     );
   }
 
+  
+
   //cerrar sesion
 
   async signOut() {

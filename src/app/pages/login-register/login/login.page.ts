@@ -76,39 +76,34 @@ export class LoginPage implements OnInit {
 
 
   
-  async getUserInfo(uid:String) {
+  async getUserInfo(uid: string) {
 
     const loading = await this.utilsSvc.loading();
     await loading.present();
-    
-
+  
     if (this.formulario_login.valid) {
-      let path='users/${uid}';
-
+      // Uso de comillas invertidas para la interpolación de cadena
+      let path = `users/${uid}`;
+  
+      // Acceder al documento de Firebase
       this.firebaseSvc.getDocument(path).then(user => {
-        this.utilsSvc.saveLocalStore('user',user);
-        this.utilsSvc.routerLink('home');
-        this.formulario_login.reset();
-
-   
-
-
+        // Verificar que el usuario no sea nulo o undefined antes de guardarlo
+        if (user && user !== null) {
+          this.utilsSvc.saveLocalStore('user', user); // Guardar el usuario
+          this.utilsSvc.routerLink('home'); // Redirigir a la página principal
+          this.formulario_login.reset(); // Resetear el formulario
+        } else {
+          console.error('El usuario no fue encontrado en Firebase.');
+        }
       }).catch(error => {
-        console.log(error);
-
-
-
-
-      }).finally(() => {  
-        loading.dismiss();
-      })
-      
-    }else {
-      this.formulario_login.markAllAsTouched();
+        console.error('Error al obtener el usuario:', error);
+      }).finally(() => {
+        loading.dismiss(); // Ocultar el loading
+      });
+  
+    } else {
+      this.formulario_login.markAllAsTouched(); // Marcar todos los campos como tocados
       loading.dismiss();
     }
   }
-
-
-
-}
+}  
