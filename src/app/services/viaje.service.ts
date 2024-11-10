@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { addDoc, collection, Firestore } from 'firebase/firestore';
 import { Viaje } from '../models/viaje.model';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
-import { map, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { Reserva } from '../models/reserva.model';
 import { Auto } from '../models/auto.model';
 
@@ -82,5 +82,12 @@ obtenerAutoPorPatente(patente: string): Observable<Auto | undefined> {
     );
 }
 
+
+private destino = new BehaviorSubject<string | null>(null);
+destino$ = this.destino.asObservable();
+
+setDestino(direccion: string) {
+  this.destino.next(direccion);
+}
 
 }

@@ -64,6 +64,10 @@ const routes: Routes = [
     path: 'viaje-conductor',
     loadChildren: () => import('./pages/users/viaje/viaje-conductor/viaje-conductor.module').then( m => m.ViajeConductorPageModule)
   },
+  {
+    path: 'prueba',
+    loadChildren: () => import('./pages/prueba/prueba.module').then( m => m.PruebaPageModule)
+  },
 
 
   

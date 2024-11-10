@@ -116,6 +116,7 @@ export class ConductorPage implements OnInit {
   direccionFin: string = '';
   direccionInicioSeleccionada: boolean = false; // Para habilitar el botón
   direccionFinSeleccionada: boolean = false; // Para habilitar el botón
+  
 
 
   // Inyección de dependencias
@@ -218,6 +219,10 @@ export class ConductorPage implements OnInit {
             this.direccionFin = result.display_name;
             this.busquedaForm.get('fin')?.setValue(this.direccionFin); // Actualiza el formulario
             this.direccionFinSeleccionada = true; // Marca que la dirección de fin es válida
+
+                 // Actualizar la dirección de destino en el servicio
+            this.viajeSvc.setDestino(this.direccionFin);
+
         }
         this.searchResultsFin = [];
     }
