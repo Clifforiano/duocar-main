@@ -50,13 +50,15 @@ export class RegisterPage implements OnInit {
         Validators.maxLength(10),
         Validators.pattern("^[a-zA-Z]+$")
       ]],
-      estado: ['', []  
+      estado: ['neutro', []  
       ]
     })
 
 
   }
 
+  
+  
   ngOnInit() {
   }
 

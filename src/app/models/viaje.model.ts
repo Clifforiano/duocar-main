@@ -1,5 +1,4 @@
 import { Auto } from "./auto.model";
-import { Reserva } from "./reserva.model";
 
 export interface Viaje {
     id_viaje?: string;
@@ -19,5 +18,7 @@ export interface Viaje {
     estado: string;
     autos: Auto[];   
 
-    reservas?: Reserva[]; 
+    //reservas  
+    reservas: number; 
+    id_pasajero?: string;
 }

@@ -7,9 +7,8 @@ import { BusquedaComponent } from './components/busqueda/busqueda.component';
 
 
 
-
 @NgModule({
-  declarations: [CHeaderComponent,BusquedaComponent, ],
+  declarations: [CHeaderComponent,BusquedaComponent,],
   exports: [CHeaderComponent,BusquedaComponent,],
   imports: [
     CommonModule,

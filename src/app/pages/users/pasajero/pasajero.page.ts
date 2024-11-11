@@ -1,13 +1,11 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, forkJoin, map, Observable, Subject, switchMap } from 'rxjs';
-import { Reserva } from 'src/app/models/reserva.model';
 import { Viaje } from 'src/app/models/viaje.model';
 import { DateService } from 'src/app/services/date.service';
 import { DireccionesService } from 'src/app/services/direcciones.service';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { NominatimService } from 'src/app/services/nominatim.service';
-import { ReservaService } from 'src/app/services/reserva.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { ViajeService } from 'src/app/services/viaje.service';
 
@@ -33,7 +31,6 @@ export class PasajeroPage implements OnInit {
   datesSvc = inject(DateService)
   fireBaseSvc = inject(FirebaseService)
   viajeSvc = inject(ViajeService)
-  reservaSvc= inject(ReservaService)
   utilsSvc = inject(UtilsService);
 
 
@@ -44,23 +41,12 @@ export class PasajeroPage implements OnInit {
 
   //reseva coleccion
 
-  reservas: Reserva[] = [];
   utils: any;
 
   //obtener id viaje
-  obtenerIdViaje(): Observable<void> {
-    return this.viajeSvc.obtenerIdFiltrados(this.direccionInicio, this.direccionFin).pipe(
-      map((viajes) => {
-        // Filtrar los viajes que no tienen estado 'terminado'
-        this.nuevareserva.id_viaje = viajes[0].id_viaje;
-      })
-    );
-  }
+
  
   //obtener id pasajero
-  obtenerIdPasajero() {
-   this.nuevareserva.id_pasajero = this.fireBaseSvc.getCurrentUserId();
-  }
 
   //obtener nro asiento
 
@@ -174,52 +160,59 @@ export class PasajeroPage implements OnInit {
     }
     }
     
+//obtener id pasajero
 
-
-  nuevareserva : Reserva = {
-    id_reserva: '',
-    id_pasajero: '',
-    id_viaje: '',
+ obtenerIdPasajero() {
+  const user = this.fireBaseSvc.getAuth().currentUser;
+  if (user) {
+    return user.uid;
   }
+  return null;
+}
 
 
-  reservar() {
-    this.obtenerIdPasajero();
 
-    // Llama a obtenerIdViaje y cualquier otra función que devuelva un Observable
-    forkJoin([
-      this.obtenerIdViaje(),
-      // Otras llamadas que necesites
-    ]).subscribe(() => {
-      this.reservaSvc.guardarReserva(this.nuevareserva).then(() => {
-        this.fireBaseSvc.updateEstadoToConductorForCurrentUser('Pasajero');
+reservar(viaje: Viaje) {
+  const idPasajero = this.obtenerIdPasajero();
 
-        this.utilsSvc.presentToast({
-          message: 'Reserva guardada correctamente',
-          duration: 1500 ,
-          color: 'success',
-          position:'middle',
-        })
+  if (idPasajero) {
+    const auto = viaje.autos[0];
+    if (viaje.reservas < auto.nroasiento) {
+      // Llamamos al método incrementarReserva del servicio
+      this.viajeSvc.incrementarReserva(viaje);
 
-      }).catch((error) => {
-       
-        this.utilsSvc.presentToast({
-          message: 'Error al guardar la reserva: ' + error.message,
-          duration: 2000 ,
-          color: 'danger',
-          position:'middle',
-        })
-
-      });
-    }, (error) => {
+      // Muestra un mensaje de éxito
       this.utilsSvc.presentToast({
-        message: 'Error al obtener el viaje: ' + error.message,
-        duration: 2000 ,
+        message: 'Reserva realizada con éxito.',
+        duration: 1500,
+        color: 'success',
+        position: 'middle',
+        icon: 'checkmark-circle-outline',
+      });
+
+      this.utilsSvc.routerLink('/viaje-pasajero');
+
+    } else {
+      // Muestra un mensaje de error si no hay cupos disponibles
+      this.utilsSvc.presentToast({
+        message: 'No se puede realizar la reserva. No quedan cupos disponibles.',
+        duration: 1500,
         color: 'danger',
-        position:'middle',
-      })
+        position: 'middle',
+        icon: 'alert-circle-outline',
+      });
+    }
+  } else {
+    // Muestra un mensaje si el usuario no está autenticado
+    this.utilsSvc.presentToast({
+      message: 'No se pudo realizar la reserva. Inicia sesión primero.',
+      duration: 1500,
+      color: 'danger',
+      position: 'middle',
+      icon: 'alert-circle-outline',
     });
   }
+}
 
 
 }

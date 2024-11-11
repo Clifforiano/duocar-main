@@ -1,16 +1,17 @@
-import { Injectable } from '@angular/core';
-import { addDoc, collection, Firestore } from 'firebase/firestore';
+import { inject, Injectable } from '@angular/core';
+import { addDoc, collection, doc, FieldValue, Firestore, increment, updateDoc } from 'firebase/firestore';
 import { Viaje } from '../models/viaje.model';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, map, Observable } from 'rxjs';
-import { Reserva } from '../models/reserva.model';
 import { Auto } from '../models/auto.model';
+import { UtilsService } from './utils.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ViajeService {
   firebaseService: any;
+  utilsSvc = inject(UtilsService)
 
 
   constructor(private firestore: AngularFirestore) {}
@@ -44,9 +45,7 @@ export class ViajeService {
 
 //obtener reservas
 
-loadReservas(viaje: Viaje): Observable<Reserva[]> {
-  return this.firestore.collection<Reserva>('reservas', ref => ref.where('id_viaje', '==', viaje.id_viaje)).valueChanges();
-}
+
 
 
 obtenerViajesFiltrados(inicio: string, fin: string): Observable<Viaje[]> {
@@ -89,5 +88,47 @@ destino$ = this.destino.asObservable();
 setDestino(direccion: string) {
   this.destino.next(direccion);
 }
+
+incrementarReserva(viaje: Viaje): void {
+  const auto = viaje.autos[0];
+
+  if (viaje.reservas < auto.nroasiento) {
+    viaje.reservas += 1;
+
+    this.firestore.collection('viajes').doc(viaje.id_viaje).update({
+      reservas: increment(1),
+    });
+  } else {
+    this.utilsSvc.presentToast({
+      message: 'No hay asientos disponibles',
+      duration: 1500,
+      color: 'danger',
+      position: 'middle',
+      icon: 'close-circle-outline',
+    })
+  }
+}
+  
+decrementarReserva(viaje: Viaje): void {
+  if (viaje.reservas > 0) {
+    // Decrementa el contador de reservas si es mayor que cero
+    viaje.reservas -= 1;
+    // Aquí podrías guardar el cambio en Firebase o en tu base de datos
+    this.utilsSvc.presentToast({
+      message: 'Reserva eliminada con exito.',
+      duration: 1500,
+      color: 'success',
+      position: 'middle',
+      icon: 'checkmark-circle-outline',
+    })
+    // Lógica para guardar en Firebase o en la base de datos
+    this.firestore.collection('viajes').doc(viaje.id_viaje).update({ reservas: viaje.reservas });
+  } else {
+    // Notificación si no hay reservas para eliminar
+    // Agrega aquí el código para mostrar una notificación al usuario
+    // Ejemplo: this.showNotification("No hay reservas para eliminar.");
+  }
+}
+
 
 }

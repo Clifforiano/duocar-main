@@ -11,6 +11,7 @@ import { AppRoutingModule } from './app-routing.module';
 import {AngularFireModule} from '@angular/fire/compat';
 import { environment } from 'src/environments/environment'; // Este debe apuntar a environment.ts
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import {  } from "src/environments/environment.prod";
 
 
 @NgModule({

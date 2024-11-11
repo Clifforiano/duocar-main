@@ -177,8 +177,14 @@ getEstadoOfCurrentUser(): Observable<string | null> {
   
   }
   //obtener nombre de usuario
-
-
+  // Método para obtener el estado del usuario actual
+  getUserState(uid: string): Observable<string | null> {
+    return this.firestore
+      .collection<User>('users')
+      .doc(uid)
+      .valueChanges()
+      .pipe(map((user) => user?.estado || null));
+  }
   constructor() { }
 
 

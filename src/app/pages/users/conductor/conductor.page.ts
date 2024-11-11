@@ -1,7 +1,6 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
-import { Reserva } from 'src/app/models/reserva.model';
 import { Viaje } from 'src/app/models/viaje.model';
 import { DateService } from 'src/app/services/date.service';
 import { DireccionesService } from 'src/app/services/direcciones.service';
@@ -32,10 +31,7 @@ export class ConductorPage implements OnInit {
     dirrecionFinal: '',
     horaFinal: '',
     estado: 'Iniciado',
-    reservas: [
-      { id_reserva: '1', id_pasajero: '1', id_viaje: '1' },
-      { id_reserva: '2', id_pasajero: '2', id_viaje: '1' },
-    ],
+    reservas: 0,
     autos: [],
     hora_partida: '',
     nom_conductor: '',
@@ -243,7 +239,7 @@ export class ConductorPage implements OnInit {
       // Luego, crea el viaje en la base de datos
       try {
         const viajeId = await this.viajeSvc.guardarViaje(this.nuevoViaje);
-        this.fireBaseSvc.updateEstadoToConductorForCurrentUser('Conductor');
+        this.fireBaseSvc.updateEstadoToConductorForCurrentUser('conductor');
 
         this.utilsSvc.presentToast({
           message: 'Viaje creado con exito',

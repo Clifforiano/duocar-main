@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { autoGuard } from './guards/auto.guard';
+import { RoleGuard } from './guards/role.guard';
 
 
 const routes: Routes = [
@@ -41,12 +42,15 @@ const routes: Routes = [
   {
     path: 'conductor',
     loadChildren: () => import('./pages/users/conductor/conductor.module').then( m => m.ConductorPageModule),
-    canActivate: [autoGuard]
+    canActivate: [RoleGuard],
+    data: {expectedRole: 'conductor'}
     
   },
   {
     path: 'pasajero',
-    loadChildren: () => import('./pages/users/pasajero/pasajero.module').then( m => m.PasajeroPageModule)
+    loadChildren: () => import('./pages/users/pasajero/pasajero.module').then( m => m.PasajeroPageModule),
+    canActivate: [RoleGuard],
+    data: {expectedRole: 'pasajero'}
   },
   {
     path: 'confirmacion',
@@ -60,13 +64,10 @@ const routes: Routes = [
   {
     path: 'registro-vehiculo',
     loadChildren: () => import('./pages/users/opciones/registro-vehiculo/registro-vehiculo.module').then( m => m.RegistroVehiculoPageModule)
-  },  {
-    path: 'viaje-conductor',
-    loadChildren: () => import('./pages/users/viaje/viaje-conductor/viaje-conductor.module').then( m => m.ViajeConductorPageModule)
   },
   {
-    path: 'prueba',
-    loadChildren: () => import('./pages/prueba/prueba.module').then( m => m.PruebaPageModule)
+    path: 'viaje-conductor',
+    loadChildren: () => import('./pages/users/viaje/viaje-conductor/viaje-conductor.module').then( m => m.ViajeConductorPageModule)
   },
 
 
