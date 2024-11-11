@@ -1,36 +1,14 @@
-<app-c-header [titulo]="'Tu viaje'"></app-c-header>
-
-
+<app-c-header></app-c-header>
 <ion-content>
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title class="ion-text-center">Confirmacion de bajada</ion-card-title>
-      
-    </ion-card-header>
 
-    <ion-card-content>
-      <ion-text class="ion-text-center">
-        <p>Seleccione a los usuarios que desea confirmar o elimine a los que no han llegado, ademas si lo desea puede cancelar el viaje.</p>
-      </ion-text>
-      <ion-list class="ion-padding"> 
-        <!-- Iterar sobre la lista de usuarios -->
-        <ion-item *ngFor="let usuario of usuarios; let i = index">
-          <ion-label>{{ usuario.nombre }}</ion-label>
-          <!-- Checkbox para seleccionar la llegada del usuario -->
-          <ion-checkbox [(ngModel)]="usuario.seleccionado" slot="start"></ion-checkbox>
-          <!-- Botón para eliminar al usuario de la lista -->
-          <ion-button color="danger" fill="clear" (click)="eliminarUsuario(i)">
-            <ion-icon name="trash-outline"></ion-icon>
-          </ion-button>
-        </ion-item>
-      </ion-list>
 
-      <div class="botones ion-padding ion-text-center" >
-        <!-- Botón para confirmar el viaje -->
-        <ion-button color="primary" (click)="confirmarViaje()" >Confirmar</ion-button>
-        <!-- Botón para cancelar el viaje -->
-        <ion-button color="danger" (click)="cancelarViaje()">Cancelar</ion-button>
-      </div>
-    </ion-card-content>
-  </ion-card>
+  <ion-list>
+    <ion-item *ngFor="let pasajero of pasajeros">
+      <ion-label>
+        {{ pasajero.nombre }} {{ pasajero.apellido }} <!-- Ajusta esto según las propiedades del pasajero -->
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
 </ion-content>
+

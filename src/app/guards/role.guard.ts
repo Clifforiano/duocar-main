@@ -18,23 +18,29 @@ export class RoleGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     return this.auth.user.pipe(
-      switchMap((user) => {
+      switchMap(user => {
         if (user) {
           return this.userService.getUserState(user.uid).pipe(
-            map((estado) => {
+            map(estado => {
               const expectedRole = route.data['expectedRole'];
               if (estado === expectedRole || estado === 'neutro') {
                 return true;
               } else {
-                this.utilsSvc.presentToast({ message: 'En este momento tienes un viaje en curso como ' + estado + '.', duration: 1500, color: 'danger', position: 'middle' });
+                // Muestra un mensaje y redirige si el usuario tiene otro rol activo
+                this.utilsSvc.presentToast({
+                  message: `En este momento tienes un viaje en curso como ${estado}.`,
+                  duration: 1500,
+                  color: 'danger',
+                  position: 'middle'
+                });
                 this.router.navigate(['/home']);
-                
                 return false;
               }
             })
           );
         } else {
-          this.router.navigate(['/login']);
+          // Si el usuario no está autenticado, redirige a '/home' y devuelve false
+          this.router.navigate(['/home']);
           return of(false);
         }
       })

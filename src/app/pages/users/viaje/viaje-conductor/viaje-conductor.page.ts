@@ -1,5 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { UtilsService } from 'src/app/services/utils.service';
+import { Component, OnInit } from '@angular/core';
+import { ViajeService } from 'src/app/services/viaje.service';
 
 @Component({
   selector: 'app-viaje-conductor',
@@ -7,40 +7,32 @@ import { UtilsService } from 'src/app/services/utils.service';
   styleUrls: ['./viaje-conductor.page.scss'],
 })
 export class ViajeConductorPage implements OnInit {
+  pasajeros: any[] = [];  // Arreglo para almacenar los pasajeros del viaje
 
-  utilsSvc=inject(UtilsService);
-
-  usuarios = [
-
-  ];
-
-  
-
-  eliminarUsuario(index: number) {
-    this.usuarios.splice(index, 1); // Eliminar el usuario de la lista
-  }
-
-  confirmarViaje() {
-    const usuariosSeleccionados = this.usuarios.filter((usuario) => usuario.seleccionado);
-    console.log('Usuarios confirmados:', usuariosSeleccionados);
-    // Lógica adicional para confirmar el viaje, como enviar los datos al servidor
-    this.utilsSvc.presentToast({
-      message: 'Viaje Finalizado',
-      duration: 1500,
-      color: 'success',
-      position:'middle',
-      icon: 'checkmark-circle-outline',
-    });
-  }
-
-  cancelarViaje() {
-    this.usuarios.forEach((usuario) => (usuario.seleccionado = false)); // Desmarcar todos
-    console.log('Viaje cancelado');
-    // Lógica adicional para cancelar el viaje
-  }
+  constructor(private viajeService: ViajeService) {}
 
   ngOnInit() {
-    const viajeId = 'ID_DEL_VIAJE';
+    const viajeId = 'a8Sm5vKnz2fJCbDtTmIf'; // Reemplaza esto con el ID del viaje que deseas consultar
+    this.obtenerPasajerosDeViaje(viajeId);
   }
 
+  // Método para obtener y listar los pasajeros del viaje
+  obtenerPasajerosDeViaje(viajeId: string) {
+    this.viajeService.getIdsPasajerosDeViaje(viajeId).subscribe(ids => {
+      if (ids && ids.length > 0) {
+        // Ahora busca los datos completos de cada pasajero
+        this.pasajeros = [];
+        ids.forEach(id => {
+          this.viajeService.getUsuarioPorId(id).subscribe(pasajero => {
+            if (pasajero) {
+              this.pasajeros.push(pasajero);
+            }
+          });
+        });
+      } else {
+        console.log('No hay pasajeros para este viaje.');
+      }
+    });
+  }
+  
 }

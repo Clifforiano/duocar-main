@@ -191,6 +191,7 @@ reservar(viaje: Viaje) {
       });
       this.fireBaseSvc.cambiarEstadoReserva(idPasajero, true);
       this.utilsSvc.routerLink('/viaje-pasajero');
+      this.fireBaseSvc.agregarPasajero(viaje.id_viaje);
 
     } else {
       // Muestra un mensaje de error si no hay cupos disponibles

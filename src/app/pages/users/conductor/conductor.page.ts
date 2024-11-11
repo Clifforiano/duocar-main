@@ -35,6 +35,7 @@ export class ConductorPage implements OnInit {
     autos: [],
     hora_partida: '',
     nom_conductor: '',
+    id_pasajero: [],
   };
 
   // auto
@@ -240,6 +241,7 @@ export class ConductorPage implements OnInit {
       try {
         const viajeId = await this.viajeSvc.guardarViaje(this.nuevoViaje);
         this.fireBaseSvc.updateEstadoToConductorForCurrentUser('conductor');
+        this.fireBaseSvc.updateEstadoConductor(this.fireBaseSvc.idusuario(), true);
 
         this.utilsSvc.presentToast({
           message: 'Viaje creado con exito',

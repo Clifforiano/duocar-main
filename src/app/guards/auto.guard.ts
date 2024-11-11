@@ -15,12 +15,12 @@ export class autoGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Promise<boolean> {
     const user = await firstValueFrom(this.firebaseService.getAuthState());
-  
+
     if (user) {
       const userId = user.uid;
       const carsSnapshot = await this.firebaseService.getAutosByUserId(userId);
-      
-      if (carsSnapshot.length > 0) {
+
+      if (carsSnapshot && carsSnapshot.length > 0) {
         return true;
       } else {
         this.router.navigate(['/registro-vehiculo']);
@@ -30,4 +30,10 @@ export class autoGuard implements CanActivate {
       this.router.navigate(['/login']);
       return false;
     }
-  }}
+  }
+}
+
+
+
+  
+

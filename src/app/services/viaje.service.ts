@@ -1,10 +1,14 @@
 import { inject, Injectable } from '@angular/core';
-import { addDoc, collection, doc, FieldValue, Firestore, increment, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, FieldValue, Firestore, increment, updateDoc, getDoc } from 'firebase/firestore';
 import { Viaje } from '../models/viaje.model';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { Auto } from '../models/auto.model';
 import { UtilsService } from './utils.service';
+import { catchError, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -124,6 +128,38 @@ decrementarReserva(viaje: Viaje): void {
   }
 }
 
+//metodos para el viajeconductor
+getIdsPasajerosDeViaje(viajeId: string): Observable<string[] | undefined> {
+  return this.firestore
+    .collection('viajes')
+    .doc(viajeId)
+    .valueChanges()
+    .pipe(
+      map((data: any) => data?.id_pasajero || []), // Extrae el campo `id_pasajero`
+      tap((ids) => console.log('IDs de pasajeros obtenidos:', ids))
+    );
+}
+
+getUsuarioPorId(id: string): Observable<any> {
+  console.log('Buscando datos para el pasajero con ID:', id);  // Log del ID que se busca
+  return this.firestore
+    .collection('users')
+    .doc(id)
+    .valueChanges()
+    .pipe(
+      tap((usuario) => {
+        if (usuario) {
+          console.log(`Datos del pasajero ${id}:`, usuario);  // Datos obtenidos
+        } else {
+          console.log(`No se encontraron datos para el pasajero con ID: ${id}`);  // Caso cuando no existe el documento
+        }
+      }),
+      catchError((error) => {
+        console.error(`Error al obtener datos del pasajero ${id}:`, error);  // Manejo de error
+        return of(undefined); // Retorna undefined en caso de error
+      })
+    );
+}
 
 
 }
