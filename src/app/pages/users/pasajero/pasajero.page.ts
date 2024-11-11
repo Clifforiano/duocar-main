@@ -189,7 +189,7 @@ reservar(viaje: Viaje) {
         position: 'middle',
         icon: 'checkmark-circle-outline',
       });
-
+      this.fireBaseSvc.cambiarEstadoReserva(idPasajero, true);
       this.utilsSvc.routerLink('/viaje-pasajero');
 
     } else {

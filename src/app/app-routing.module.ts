@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { autoGuard } from './guards/auto.guard';
 import { RoleGuard } from './guards/role.guard';
+import { ReservaGuard } from './guards/reserva.guard';
+import { conductorGuard } from './guards/conductor.guard';
 
 
 const routes: Routes = [
@@ -42,15 +44,16 @@ const routes: Routes = [
   {
     path: 'conductor',
     loadChildren: () => import('./pages/users/conductor/conductor.module').then( m => m.ConductorPageModule),
-    canActivate: [RoleGuard],
+    canActivate: [RoleGuard,conductorGuard],
     data: {expectedRole: 'conductor'}
     
   },
   {
     path: 'pasajero',
     loadChildren: () => import('./pages/users/pasajero/pasajero.module').then( m => m.PasajeroPageModule),
-    canActivate: [RoleGuard],
+    canActivate: [RoleGuard,ReservaGuard],
     data: {expectedRole: 'pasajero'}
+    
   },
   {
     path: 'confirmacion',

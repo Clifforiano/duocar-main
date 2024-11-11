@@ -4,4 +4,6 @@ export interface User {
     password: string;
     displayName: string;
     estado: string;
+    estado_reserva: boolean;
+    estado_conductor: boolean;
   }

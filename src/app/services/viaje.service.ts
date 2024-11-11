@@ -99,13 +99,7 @@ incrementarReserva(viaje: Viaje): void {
       reservas: increment(1),
     });
   } else {
-    this.utilsSvc.presentToast({
-      message: 'No hay asientos disponibles',
-      duration: 1500,
-      color: 'danger',
-      position: 'middle',
-      icon: 'close-circle-outline',
-    })
+  
   }
 }
   
@@ -129,6 +123,7 @@ decrementarReserva(viaje: Viaje): void {
     // Ejemplo: this.showNotification("No hay reservas para eliminar.");
   }
 }
+
 
 
 }

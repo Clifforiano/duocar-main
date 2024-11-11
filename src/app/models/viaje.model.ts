@@ -20,5 +20,5 @@ export interface Viaje {
 
     //reservas  
     reservas: number; 
-    id_pasajero?: string;
+    id_pasajero?: string[];
 }

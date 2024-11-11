@@ -51,7 +51,9 @@ export class RegisterPage implements OnInit {
         Validators.pattern("^[a-zA-Z]+$")
       ]],
       estado: ['neutro', []  
-      ]
+      ],
+      estado_reserva: [false, []]
+    
     })
 
 

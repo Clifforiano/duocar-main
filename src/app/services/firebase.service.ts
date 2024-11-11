@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile,sendPasswordResetEmail } from 'firebase/auth'
 import { User } from '../models/user.model';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import {getFirestore,setDoc,doc, getDoc} from '@angular/fire/firestore';
+import {getFirestore,setDoc,doc, getDoc, updateDoc} from '@angular/fire/firestore';
 import { UtilsService } from './utils.service';
 import { Auto } from '../models/auto.model';
 import { map, Observable } from 'rxjs';
@@ -26,6 +26,12 @@ export class FirebaseService {
   }
  //usuario acutal
 
+ //cambiar estado reserva usuario
+
+ cambiarEstadoReserva(uid: string, estado_reserva: boolean) {
+  const userRef = doc(getFirestore(), 'users', uid);
+  return updateDoc(userRef, { estado_reserva });
+}
 
 
   //login
@@ -188,5 +194,22 @@ getEstadoOfCurrentUser(): Observable<string | null> {
   constructor() { }
 
 
+// Obtener el estado de reserva del usuario actual
+getEstadoReserva(uid: string): Observable<boolean | null> {
+  return this.firestore
+    .collection<User>('users')
+    .doc(uid)
+    .valueChanges()
+    .pipe(map((user) => user?.estado_reserva || null));
+}
+
+//metodo para obtener el estado del conductor
+getEstadoConductor(uid: string): Observable<boolean | null> {
+  return this.firestore
+    .collection<User>('users')
+    .doc(uid)
+    .valueChanges()
+    .pipe(map((user) => user?.estado_conductor || null));
+}
   
 }
