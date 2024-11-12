@@ -1,20 +1,18 @@
-<app-c-header [titulo]="'historial'"  ></app-c-header>
-
+<app-c-header [titulo]="'historial'"></app-c-header>
 
 <ion-content>
   <ion-list *ngIf="historial$ | async as historial; else noHistorial">
     <ion-item *ngFor="let viaje of historial">
       <ion-card>
         <ion-card-header>
-          <ion-card-title>{{ viaje.nom_conductor }}</ion-card-title>
+          <ion-card-title>{{ viaje.nomconductor }}</ion-card-title>
         </ion-card-header>
         <ion-card-content>
-          <p><strong>Tipo de Viaje:</strong> {{ viaje.tipo_viaje }}</p>
           <p><strong>Fecha:</strong> {{ viaje.fecha }}</p>
           <p><strong>Precio:</strong> ${{ viaje.precio }}</p>
           <p><strong>Desde:</strong> {{ viaje.dirrecionInicio }} <strong>Hasta:</strong> {{ viaje.dirrecionFinal }}</p>
           <p><strong>Hora de Inicio:</strong> {{ viaje.horaInicio }} <strong>Hora de Finalización:</strong> {{ viaje.horaFinal }}</p>
-          <p><strong>Estado:</strong> {{ viaje.estado_viaje }}</p>
+          <p><strong>Estado:</strong> Finalizado</p>
         </ion-card-content>
       </ion-card>
     </ion-item>

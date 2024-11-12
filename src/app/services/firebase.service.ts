@@ -360,8 +360,33 @@ agregarPasajero(viajeId: string) {
 
 
 
-ObtenerHistorial(id_usuario: string) {
-  return this.firestore.collection('viajahistorial', ref => ref.where('id_usuario', '==', id_usuario)).valueChanges();
+ObtenerHistorial(uid: string): Observable<HistorialViaje[]> {
+  return this.firestore.collection<HistorialViaje>('viajahistorial', ref => 
+    ref.where('id_conductor', '==', uid)
+  ).valueChanges();
+}
+
+// Obtener viajes como pasajero
+obtenerHistorialPasajero(uid: string): Observable<HistorialViaje[]> {
+  return this.firestore.collection<HistorialViaje>('viajahistorial', ref => 
+    ref.where('pasajeros', 'array-contains', uid)
+  ).valueChanges();
+}
+
+// En tu servicio de Firebase
+getConductorIds(): Observable<string[]> {
+  return this.firestore.collection('viajahistorial').get().pipe(
+    map(snapshot => {
+      const conductorIds = new Set<string>();
+      snapshot.forEach(doc => {
+        const data = doc.data() as HistorialViaje;  // Aquí indicamos que el tipo es HistorialViaje
+        if (data.id_conductor) {
+          conductorIds.add(data.id_conductor); // Agrega el ID del conductor
+        }
+      });
+      return Array.from(conductorIds); // Convierte el Set a un Array
+    })
+  );
 }
 
 
@@ -386,31 +411,22 @@ agregarAlHistorialPorId(viajeId: string): Observable<void> {
           return;
         }
 
-        const userId = viaje.id_conductor === viaje.id_pasajero ? viaje.id_pasajero : viaje.id_conductor;
-
-        // Determinar si el usuario es el conductor o pasajero
-        const tipoViaje = viaje.id_conductor === userId ? 'Conductor' : 'Pasajero';
-
-        // Crear el objeto para el historial
-        const historialViaje = {
-          id_viaje: viaje.id_viaje,
-          id_usuario: userId,
-          tipo_viaje: tipoViaje,
-          nom_conductor: viaje.nom_conductor,
-          fecha: viaje.fecha,
+        // Crear el objeto para el historial basado en el nuevo modelo
+        const historialViaje: HistorialViaje = {
+          id_historial: viajeId,  // Usando el ID del viaje como historial ID
           precio: viaje.precio,
+          id_conductor: viaje.id_conductor,
+          fecha: viaje.fecha,
+          nomconductor: viaje.nom_conductor,
           dirrecionInicio: viaje.dirrecionInicio,
           horaInicio: viaje.horaInicio,
           dirrecionFinal: viaje.dirrecionFinal,
           horaFinal: viaje.horaFinal,
-          estado: viaje.estado,
-          autos: viaje.autos,  // Los autos asociados al viaje
-          reservas: viaje.reservas,
-          id_pasajero: viaje.id_pasajero
+          pasajeros: viaje.id_pasajero,  // Solo si el viaje tiene pasajeros
         };
 
         // Verificar si el viaje ya existe en la colección 'viajahistorial'
-        this.firestore.collection('viajahistorial').ref.where('id_viaje', '==', viajeId).get().then(querySnapshot => {
+        this.firestore.collection('viajahistorial').ref.where('id_historial', '==', viajeId).get().then(querySnapshot => {
           if (querySnapshot.docs.length > 0) {
             // El viaje ya existe, actualizarlo
             const docRef = querySnapshot.docs[0].ref;
@@ -439,4 +455,3 @@ agregarAlHistorialPorId(viajeId: string): Observable<void> {
   });
 }
 }
-

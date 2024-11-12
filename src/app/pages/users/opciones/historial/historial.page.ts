@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import {inject} from '@angular/core';
+import {combineLatest, map} from 'rxjs';
 @Component({
   selector: 'app-historial',
   templateUrl: './historial.page.html',
@@ -14,14 +15,32 @@ export class HistorialPage implements OnInit {
 
   constructor(
 
+    
   ) {}
 
   ngOnInit() {
-    // Obtener el historial de viajes para el usuario logueado
     this.fireBaseSvc.getAuthState().subscribe(authState => {
       if (authState) {
-        this.historial$ = this.fireBaseSvc.ObtenerHistorial(authState.uid); // Llamamos al método ObtenerHistorial
+        const userId = authState.uid;
+  
+        // Obtener historial como conductor
+        const historialConductor$ = this.fireBaseSvc.ObtenerHistorial(userId);
+  
+        // Obtener historial como pasajero
+        const historialPasajero$ = this.fireBaseSvc.obtenerHistorialPasajero(userId);
+  
+        // Combinar los resultados
+        this.historial$ = combineLatest([historialConductor$, historialPasajero$]).pipe(
+          map(([conductor, pasajero]) => {
+            // Combina ambos historiales en uno solo
+            return [...conductor, ...pasajero];
+          })
+        );
+  
+        // Suscribirse a la lista combinada
+        this.historial$.subscribe(historial => {
+          console.log('Historial combinado:', historial);
+        });
       }
     });
-  }
-}
+  }}
