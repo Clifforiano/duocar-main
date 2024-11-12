@@ -2,13 +2,35 @@
 <ion-content>
 
 
-  <ion-list>
-    <ion-item *ngFor="let pasajero of pasajeros">
-      <ion-label>
-        {{ pasajero.nombre }} {{ pasajero.apellido }} <!-- Ajusta esto según las propiedades del pasajero -->
-      </ion-label>
-    </ion-item>
-  </ion-list>
+<ion-card>
+  <ion-card-header>
+    <ion-card-title class="ion-text-center">Sus pasajeros</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-list>
+      <ion-item *ngFor="let pasajero of pasajeros" lines="full">
+        <ion-icon slot="start" name="person"></ion-icon>
+        <ion-label>
+          <h2>{{ pasajero.nombre }} {{ pasajero.apellido }}</h2>  <!-- Ajusta esto según las propiedades del pasajero -->
+        </ion-label>
+      </ion-item>
+    </ion-list>
+    <ion-row>
+      <ion-col size="6">
+        <ion-button (click)="cancelarViaje()" expand="block">
+          Terminar
+        </ion-button>
+      </ion-col>
+      <ion-col size="6">
+        <ion-button (click)="cancelarViaje()" expand="block">
+          Cancelar
+        </ion-button>
+      </ion-col>
+    </ion-row>
+   
+  </ion-card-content>
+</ion-card>
+
 
 </ion-content>
 

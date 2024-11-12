@@ -30,10 +30,9 @@ export class ConductorPage implements OnInit {
     horaInicio: '',
     dirrecionFinal: '',
     horaFinal: '',
-    estado: 'Iniciado',
+    estado: 'pendiente',
     reservas: 0,
     autos: [],
-    hora_partida: '',
     nom_conductor: '',
     id_pasajero: [],
   };
@@ -93,7 +92,6 @@ export class ConductorPage implements OnInit {
       const fecha = new Date(horaCompleta);
       const horas = fecha.getHours().toString().padStart(2, '0');
       const minutos = fecha.getMinutes().toString().padStart(2, '0');
-      this.nuevoViaje.hora_partida = `${horas}:${minutos}`; // Formato HH:mm
     }
   }
   

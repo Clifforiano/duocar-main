@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { FirebaseService } from 'src/app/services/firebase.service';
+import { UtilsService } from 'src/app/services/utils.service';
 import { ViajeService } from 'src/app/services/viaje.service';
 
 @Component({
@@ -7,32 +9,107 @@ import { ViajeService } from 'src/app/services/viaje.service';
   styleUrls: ['./viaje-conductor.page.scss'],
 })
 export class ViajeConductorPage implements OnInit {
-  pasajeros: any[] = [];  // Arreglo para almacenar los pasajeros del viaje
+  public pasajeros: any[] = [];  // Arreglo para almacenar los pasajeros del viaje
+  private cachedUsuarios: { [id: string]: any } = {}; // Cache para los usuarios obtenidos
+  
 
-  constructor(private viajeService: ViajeService) {}
+  utilsSvc = inject(UtilsService);
+  firebaseSvc = inject(FirebaseService);
 
-  ngOnInit() {
-    const viajeId = 'a8Sm5vKnz2fJCbDtTmIf'; // Reemplaza esto con el ID del viaje que deseas consultar
-    this.obtenerPasajerosDeViaje(viajeId);
+  constructor(private viajeService: ViajeService) {
+    
   }
 
-  // Método para obtener y listar los pasajeros del viaje
-  obtenerPasajerosDeViaje(viajeId: string) {
-    this.viajeService.getIdsPasajerosDeViaje(viajeId).subscribe(ids => {
-      if (ids && ids.length > 0) {
-        // Ahora busca los datos completos de cada pasajero
-        this.pasajeros = [];
-        ids.forEach(id => {
-          this.viajeService.getUsuarioPorId(id).subscribe(pasajero => {
-            if (pasajero) {
-              this.pasajeros.push(pasajero);
-            }
-          });
-        });
+  viajeid=""
+  ngOnInit() {
+
+
+    // Obtener el ID del viaje pendiente para el usuario autenticado
+    this.firebaseSvc.getPendingTripId().subscribe(viajeId => {
+      if (viajeId) {
+        // Si se encontró un viaje pendiente, obtener los pasajeros
+        this.obtenerPasajerosDeViaje(viajeId);
+        this.viajeid=viajeId
       } else {
-        console.log('No hay pasajeros para este viaje.');
+        console.log('No hay un viaje pendiente para el usuario autenticado.');
+      
       }
     });
   }
+
+  //obtener hora sistema
+  obtenerHoraSistema() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`; // Retorna un string en formato "hh:mm:ss"
+  }
+
+  // Método para obtener y listar los pasajeros del viaje
+  async obtenerPasajerosDeViaje(viajeId: string) {
+    const loading = await this.utilsSvc.loading();
+    await loading.present();
   
+    // Verificar el estado del viaje antes de continuar
+    this.viajeService.getEstadoViaje(viajeId).subscribe(
+      async estado => {
+        if (estado === 'pendiente') {
+          // Solo proceder a obtener los pasajeros si el viaje está en estado "pendiente"
+          this.viajeService.getIdsPasajerosDeViaje(viajeId).subscribe(
+            ids => {
+              if (ids && ids.length > 0) {
+                this.pasajeros = [];
+                ids.forEach(id => {
+                  // Verificar si el usuario ya está en cache
+                  if (this.cachedUsuarios[id]) {
+                    this.pasajeros.push(this.cachedUsuarios[id]);
+                  } else {
+                    // Si no está en cache, hacer la solicitud y guardarlo en cache
+                    this.viajeService.getUsuarioPorId(id).subscribe(pasajero => {
+                      if (pasajero) {
+                        this.cachedUsuarios[id] = pasajero; // Guardar en cache
+                        this.pasajeros.push(pasajero);
+                      }
+                    });
+                  }
+                });
+              } else {
+                console.log('No hay pasajeros para este viaje.');
+              }
+            },
+            error => {
+              console.error('Error al cargar los IDs de pasajeros:', error);
+            }
+          );
+        } else {
+          console.log('El viaje ya no está en estado pendiente.');
+          this.pasajeros = [];  // Limpiar la lista de pasajeros si el viaje no está pendiente
+        }
+        loading.dismiss();
+      },
+      error => {
+        console.error('Error al obtener el estado del viaje:', error);
+        loading.dismiss();
+      }
+    );
+  }
+  
+
+  async cancelarViaje() {
+    await this.firebaseSvc.agregarAlHistorialPorId(this.viajeid).subscribe();
+    await this.firebaseSvc.cambiarEstadoViaje(this.viajeid, 'cancelado');
+    await this.firebaseSvc.updateEstadoToConductorForCurrentUser('neutro');
+    await this.firebaseSvc.updateEstadoConductor(this.firebaseSvc.idusuario(), false);
+    await this.firebaseSvc.cambiarHoraFinViaje(this.viajeid, this.obtenerHoraSistema());
+    
+    this.utilsSvc.routerLink('home');
+    this.utilsSvc.presentToast({
+      message: 'Viaje cancelado con exito',
+      color: 'success',
+      position: 'middle',
+      duration: 2000,
+      icon: 'checkmark-circle-outline',
+    })
+  }
 }

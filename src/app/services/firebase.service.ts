@@ -8,7 +8,9 @@ import { UtilsService } from './utils.service';
 import { Auto } from '../models/auto.model';
 import { map, Observable } from 'rxjs';
 import { Viaje } from '../models/viaje.model';
-import { from } from 'rxjs';
+import {switchMap} from 'rxjs/operators'
+import {of} from 'rxjs'
+import { HistorialViaje } from '../models/historial.model';
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +36,43 @@ export class FirebaseService {
  cambiarEstadoReserva(uid: string, estado_reserva: boolean) {
   const userRef = doc(getFirestore(), 'users', uid);
   return updateDoc(userRef, { estado_reserva });
+}
+//obtener id viaje
+getPendingTripId() {
+  return this.getAuthState().pipe(
+    switchMap(user => {
+      if (user) {
+        // Filtra los viajes que estén en estado "pendiente" y que pertenezcan al usuario autenticado
+        return this.firestore.collection<User>('viajes', ref => 
+          ref.where('estado', '==', 'pendiente').where('id_conductor', '==', user.uid)
+        ).get();
+      } else {
+        // Si no hay usuario autenticado, retorna un Observable vacío
+        return of(null);
+      }
+    }),
+    map(querySnapshot => {
+      if (querySnapshot) {
+        const pendingTrip = querySnapshot.docs[0];
+        return pendingTrip ? pendingTrip.id : null; // Retorna el ID si hay un viaje "pendiente"
+      }
+      return null;
+    })
+  );
+}
+
+
+//cambiar estado viaje finalizado-cancelado-pendiente
+
+cambiarEstadoViaje(viajeId: string, estado: string) {
+  const viajeRef = doc(getFirestore(), 'viajes', viajeId);
+  return updateDoc(viajeRef, { estado });
+}
+
+//cambiar hora fin viaje
+cambiarHoraFinViaje(viajeId: string, horaFin: string) {
+  const viajeRef = doc(getFirestore(), 'viajes', viajeId);
+  return updateDoc(viajeRef, { horaFinal: horaFin });
 }
 
 
@@ -206,6 +245,8 @@ getEstadoReserva(uid: string): Observable<boolean | null> {
     .pipe(map((user) => user?.estado_reserva || null));
 }
 
+//obtener estado de viaje actual
+
 //metodo para obtener el estado del conductor
 getEstadoConductor(uid: string): Observable<boolean | null> {
   return this.firestore
@@ -242,6 +283,21 @@ updateEstadoConductor(uid: string, estado_conductor: boolean): Promise<void> {
   })
   .catch(error => {
     console.error('Error al actualizar estado_conductor: ', error);
+  });
+}
+
+//updateEstadoViaje
+
+updateEstadoViaje(viajeId: string, estado_viaje: string) {
+  const viajeRef = this.firestore.collection('viajes').doc(viajeId);
+
+  return viajeRef.update({
+    estado_viaje: estado_viaje
+  }).then(() => {
+    console.log(`Estado del viaje ${viajeId} actualizado a: ${estado_viaje}`);
+  })
+  .catch(error => {
+    console.error('Error al actualizar el estado del viaje: ', error);
   });
 }
 
@@ -299,27 +355,88 @@ agregarPasajero(viajeId: string) {
   }
 
 
-// Método para obtener los viajes que no estén finalizados
-getViajesNoFinalizados(): Observable<Viaje[]> {
-  return this.firestore.collection<Viaje>('viajes', ref => 
-    ref.where('estado', '!=', 'finalizado')  // Filtra viajes cuyo estado no sea 'finalizado'
-  ).valueChanges();
+//historial
+// Obtener los viajes del historial del usuario logueado
+
+
+
+ObtenerHistorial(id_usuario: string) {
+  return this.firestore.collection('viajahistorial', ref => ref.where('id_usuario', '==', id_usuario)).valueChanges();
 }
 
-// Método para obtener los viajes de un usuario específico que no estén finalizados
-getViajesNoFinalizadosPorUsuario(uid: string): Observable<Viaje[]> {
-  return this.firestore.collection<Viaje>('viajes', ref => 
-    ref.where('uid', '==', uid)  // Filtra por el ID del usuario
-    .where('estado', '!=', 'finalizado')  // Filtra viajes cuyo estado no sea 'finalizado'
-  ).valueChanges();
+
+agregarAlHistorialPorId(viajeId: string): Observable<void> {
+  return new Observable(observer => {
+    // Obtener el estado de autenticación del usuario logueado
+    this.getAuthState().pipe(
+      switchMap(authState => {
+        if (!authState) {
+          observer.error('Usuario no autenticado');
+          return [];
+        }
+
+        const userId = authState.uid; // Obtener el UID del usuario logueado
+
+        // Obtener el viaje completo usando el ID del viaje
+        return this.firestore.collection('viajes').doc(viajeId).valueChanges();
+      }),
+      map((viaje: any) => {
+        if (!viaje) {
+          observer.error('Viaje no encontrado');
+          return;
+        }
+
+        const userId = viaje.id_conductor === viaje.id_pasajero ? viaje.id_pasajero : viaje.id_conductor;
+
+        // Determinar si el usuario es el conductor o pasajero
+        const tipoViaje = viaje.id_conductor === userId ? 'Conductor' : 'Pasajero';
+
+        // Crear el objeto para el historial
+        const historialViaje = {
+          id_viaje: viaje.id_viaje,
+          id_usuario: userId,
+          tipo_viaje: tipoViaje,
+          nom_conductor: viaje.nom_conductor,
+          fecha: viaje.fecha,
+          precio: viaje.precio,
+          dirrecionInicio: viaje.dirrecionInicio,
+          horaInicio: viaje.horaInicio,
+          dirrecionFinal: viaje.dirrecionFinal,
+          horaFinal: viaje.horaFinal,
+          estado: viaje.estado,
+          autos: viaje.autos,  // Los autos asociados al viaje
+          reservas: viaje.reservas,
+          id_pasajero: viaje.id_pasajero
+        };
+
+        // Verificar si el viaje ya existe en la colección 'viajahistorial'
+        this.firestore.collection('viajahistorial').ref.where('id_viaje', '==', viajeId).get().then(querySnapshot => {
+          if (querySnapshot.docs.length > 0) {
+            // El viaje ya existe, actualizarlo
+            const docRef = querySnapshot.docs[0].ref;
+            this.firestore.collection('viajahistorial').doc(docRef.id).update(historialViaje)
+              .then(() => {
+                observer.next();
+                observer.complete();
+              })
+              .catch(error => {
+                observer.error('Error al actualizar el historial: ' + error);
+              });
+          } else {
+            // El viaje no existe, agregarlo a la colección 'viajahistorial'
+            this.firestore.collection('viajahistorial').add(historialViaje)
+              .then(() => {
+                observer.next();
+                observer.complete();
+              })
+              .catch(error => {
+                observer.error('Error al agregar al historial: ' + error);
+              });
+          }
+        });
+      })
+    ).subscribe();
+  });
 }
-
-// Método para cambiar el estado de un viaje  // Método para cambiar el estado de un viaje
-  updateEstadoViaje(viajeId: string, estado: string): Promise<void> {
-    const viajeRef = this.firestore.collection('viajes').doc(viajeId);
-    return from(viajeRef.update({ estado })).toPromise(); // Convierte el resultado de `update` a una promesa
-  }
-
-
 }
 

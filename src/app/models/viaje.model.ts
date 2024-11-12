@@ -13,7 +13,6 @@ export interface Viaje {
     dirrecionFinal: string;
     horaFinal: string; // Hora en formato de fecha
     //hora_partida
-    hora_partida: string;
 
     estado: string;
     autos: Auto[];   

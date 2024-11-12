@@ -119,7 +119,13 @@ export class PasajeroPage implements OnInit {
     }
   }
 
+
+  
+
+
   onSelectResult(result: any, tipo: string) {
+
+        
     if (tipo === 'inicio') {
       if (this.searchResultsInicio.includes(result)) {
         this.direccionInicio = result.display_name;
@@ -146,7 +152,7 @@ export class PasajeroPage implements OnInit {
       
       this.viajeSvc.obtenerViajesFiltrados(inicio, fin).subscribe((viajes) => {
         // Filtrar los viajes que no tienen estado 'terminado'
-        this.viajesDisponibles = viajes.filter(viaje => viaje.estado !== 'terminado');
+        this.viajesDisponibles = viajes.filter(viaje => viaje.estado === 'pendiente');
         if (this.viajesDisponibles.length === 0) {
          this.utilsSvc.presentToast({
            message: 'No hay viajes disponibles',

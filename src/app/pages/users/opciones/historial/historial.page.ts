@@ -1,46 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-
+import { Observable } from 'rxjs';
+import { FirebaseService } from 'src/app/services/firebase.service';
+import {inject} from '@angular/core';
 @Component({
   selector: 'app-historial',
   templateUrl: './historial.page.html',
   styleUrls: ['./historial.page.scss'],
 })
 export class HistorialPage implements OnInit {
+  historial$: Observable<any[]>; // Observador para el historial de viajes
+  fireBaseSvc = inject(FirebaseService)
 
-  viajes: Array<any>;
-  constructor() { 
-    this.viajes = [
-      {
-        conductor: 'Juan Pérez',
-        precio: '15,000 CLP',
-        asiento: 'A3',
-        automovil: {
-          marca: 'Toyota',
-          modelo: 'Corolla',
-          color: 'Verde'
-        },
-        fecha: '20/10/2024',
-        hora: '14:30',
-        tipoUsuario: 'Estudiante'
-      },
-      {
-        conductor: 'Ana López',
-        precio: '18,500 CLP',
-        asiento: 'B5',
-        automovil: {
-          marca: 'Hyundai',
-          modelo: 'Elantra',
-          color: 'Rojo'
-        },
-        fecha: '21/10/2024',
-        hora: '16:45',
-        tipoUsuario: 'Adulto'
-      }
-    ];
 
-  }
+  constructor(
+
+  ) {}
 
   ngOnInit() {
+    // Obtener el historial de viajes para el usuario logueado
+    this.fireBaseSvc.getAuthState().subscribe(authState => {
+      if (authState) {
+        this.historial$ = this.fireBaseSvc.ObtenerHistorial(authState.uid); // Llamamos al método ObtenerHistorial
+      }
+    });
   }
-
 }

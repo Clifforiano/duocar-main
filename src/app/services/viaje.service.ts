@@ -7,6 +7,8 @@ import { Auto } from '../models/auto.model';
 import { UtilsService } from './utils.service';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { HistorialViaje } from '../models/historial.model';
+import {switchMap} from 'rxjs/operators'
 
 
 
@@ -162,4 +164,39 @@ getUsuarioPorId(id: string): Observable<any> {
 }
 
 
+obtenerEstadoViaje(id_conductor: string): Promise<string | undefined> {
+  return this.firestore
+    .collection('viajes', ref => ref.where('id_conductor', '==', id_conductor))
+    .get()
+    .toPromise()
+    .then(snapshot => {
+      if (!snapshot.empty) {
+        const viajeData = snapshot.docs[0].data() as { estado: string }; // Conversión de tipo
+        return viajeData.estado;
+      } else {
+        throw new Error('No se encontró ningún viaje con el id_conductor especificado');
+      }
+    })
+    .catch(error => {
+      console.error("Error al obtener el estado del viaje:", error);
+      throw error;
+    });
 }
+
+getEstadoViaje(viajeId: string): Observable<string> {
+  return this.firestore
+    .collection('viajes')
+    .doc(viajeId)
+    .valueChanges()
+    .pipe(
+      map((data: any) => data?.estado || '')
+    );
+}
+
+
+ // Método para obtener el historial de viajes de un usuario
+ 
+}
+
+
+
