@@ -90,6 +90,13 @@ export class PasajeroPage implements OnInit {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
+        
+        // Guardar las coordenadas en localStorage
+        const coordsInicio = { lat: latitude, lng: longitude };
+        localStorage.setItem('coordsInicio', JSON.stringify(coordsInicio));
+        console.log('Coordenadas de inicio guardadas en localStorage:', coordsInicio);
+  
+        // Buscar la dirección usando el servicio Nominatim
         this.nominatimService.search(`${latitude}, ${longitude}`).subscribe((results) => {
           if (results && results.length > 0) {
             this.direccionInicio = results[0].display_name;
@@ -104,6 +111,7 @@ export class PasajeroPage implements OnInit {
       console.error("La geolocalización no está soportada en este navegador.");
     }
   }
+  
 
   onSearch(event: any, tipo: string) {
     const query = event.target.value;
@@ -122,25 +130,49 @@ export class PasajeroPage implements OnInit {
 
   
 
-
   onSelectResult(result: any, tipo: string) {
-
-        
     if (tipo === 'inicio') {
       if (this.searchResultsInicio.includes(result)) {
         this.direccionInicio = result.display_name;
         this.busquedaForm.get('inicio')?.setValue(this.direccionInicio); // Actualiza el formulario
         this.direccionInicioSeleccionada = true; // Marca que la dirección de inicio es válida
+  
+        // Verificar si las coordenadas existen en el resultado
+        if (result.lat && result.lon) {
+          const coordsInicio = {
+            lat: result.lat,
+            lng: result.lon
+          };
+          localStorage.setItem('coordsInicio', JSON.stringify(coordsInicio));
+          
+          console.log('Coordenadas de inicio guardadas:', coordsInicio);  // Verifica que se guardaron correctamente// Guardamos las coordenadas
+        } else {
+          console.error('No se encontraron coordenadas para la dirección de inicio');
+        }
       }
       this.searchResultsInicio = [];
     } else if (tipo === 'fin') {
       if (this.searchResultsFin.includes(result)) {
         this.direccionFin = result.display_name;
         this.busquedaForm.get('fin')?.setValue(this.direccionFin); // Actualiza el formulario
+  
+        // Verificar si las coordenadas existen en el resultado
+        if (result.lat && result.lon) {
+          const coordsFin = {
+            lat: result.lat,
+            lon: result.lon
+          };
+          localStorage.setItem('coordsFin', JSON.stringify(coordsFin)); // Guardamos las coordenadas
+          console.log('Coordenadas de fin:', coordsFin); // Verifica si se guardan correctamente
+        } else {
+          console.error('No se encontraron coordenadas para la dirección de fin');
+        }
       }
       this.searchResultsFin = [];
     }
-  } async buscar() {
+  }
+  
+   async buscar() {
     
     const loading = await this.utilsSvc.loading();
     await loading.present();

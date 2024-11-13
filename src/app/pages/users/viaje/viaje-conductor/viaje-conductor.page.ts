@@ -144,7 +144,7 @@ export class ViajeConductorPage implements OnInit {
      // Navegar al home y mostrar el toast de éxito
      this.utilsSvc.routerLink('home');
      this.utilsSvc.presentToast({
-       message: 'Viaje cancelado con éxito',
+      message: 'Viaje fue finalizado con éxito',
        color: 'success',
        position: 'middle',
        duration: 2000,
