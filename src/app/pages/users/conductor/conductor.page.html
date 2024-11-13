@@ -2,9 +2,9 @@
 
 <ion-content>
 
-<ion-card>
+  <ion-card>
     <ion-card-header>
-        <ion-card-title class="ion-text-center">Publicar viaje</ion-card-title>
+      <ion-card-title class="ion-text-center">Publicar viaje</ion-card-title>
     </ion-card-header>
     <form [formGroup]="busquedaForm">
       <!-- Input para la dirección de inicio -->
@@ -15,18 +15,16 @@
         (ionInput)="onSearch($event, 'inicio')"
         formControlName="inicio"
       >
-        <ion-icon slot="end" name="pin" size="large" (click)="obtenerDireccionActual()"></ion-icon> <!-- Añadido el evento click aquí -->
+        <ion-icon slot="end" name="pin" size="large"></ion-icon>
       </ion-input>
-  
+
       <!-- Lista de resultados para la dirección de inicio -->
-      <ion-list *ngIf="searchResultsInicio.length > 0">
+      <ion-list *ngIf="searchResultsInicio && searchResultsInicio.length > 0">
         <ion-item *ngFor="let result of searchResultsInicio" (click)="onSelectResult(result, 'inicio')">
-          {{ result.display_name }}
+          {{ result.display_name || result.place_name }}
         </ion-item>
       </ion-list>
-  
-     
-      
+
       <!-- Input para la dirección de fin -->
       <ion-input
         class="ion-padding"
@@ -34,56 +32,56 @@
         [value]="direccionFin"
         (ionInput)="onSearch($event, 'fin')"
         formControlName="fin"
-      ><ion-icon slot="end" name="home" size="large"></ion-icon></ion-input>
-  
+      >
+        <ion-icon slot="end" name="home" size="large"></ion-icon>
+      </ion-input>
+
       <!-- Lista de resultados para la dirección de fin -->
-      <ion-list *ngIf="searchResultsFin.length > 0">
+      <ion-list *ngIf="searchResultsFin && searchResultsFin.length > 0">
         <ion-item *ngFor="let result of searchResultsFin" (click)="onSelectResult(result, 'fin')">
-          {{ result.display_name }}
+          {{ result.display_name || result.place_name }}
         </ion-item>
       </ion-list>
 
-      
-      <ion-input 
-      class="ion-padding"
-      type="number"
-      formControlName="precio" 
-      [value]="precio_viaje"
-      placeholder="Ingrese el precio del viaje"
-      
-      > <ion-icon slot="end" name="cash" size="large"></ion-icon></ion-input>
+      <ion-input
+        class="ion-padding"
+        type="number"
+        formControlName="precio"
+        [value]="precio_viaje"
+        placeholder="Ingrese el precio del viaje"
+      >
+        <ion-icon slot="end" name="cash" size="large"></ion-icon>
+      </ion-input>
+
       <div *ngIf="busquedaForm.get('precio')?.invalid && busquedaForm.get('precio')?.touched" class="centrar_notificacion">
-        <ion-text color="danger"  class="centrar_notificacion">
-          <ng-container class="centrar_notificacion" *ngIf="busquedaForm.get('precio')?.errors?.['required']" >El precio es requerido.</ng-container>
-          <ng-container class="centrar_notificacion" *ngIf="busquedaForm.get('precio')?.errors?.['min']" >El precio debe ser mayor a 1000.</ng-container>
+        <ion-text color="danger" class="centrar_notificacion">
+          <ng-container class="centrar_notificacion" *ngIf="busquedaForm.get('precio')?.errors?.['required']">
+            El precio es requerido.
+          </ng-container>
+          <ng-container class="centrar_notificacion" *ngIf="busquedaForm.get('precio')?.errors?.['min']">
+            El precio debe ser mayor a 1000.
+          </ng-container>
         </ion-text>
       </div>
 
       <ion-item class="ion-padding">
         <ion-label><p>Seleccione la hora de partida</p></ion-label>
-        <ion-datetime 
+        <ion-datetime
           displayFormat="HH:mm"
           presentation="time"
-          formControlName="horaPartida">
+          formControlName="horaPartida"
+        >
         </ion-datetime>
         <ion-text color="danger" *ngIf="busquedaForm.get('horaPartida').invalid && busquedaForm.get('horaPartida').touched">
           La hora de partida es requerida.
         </ion-text>
       </ion-item>
 
-      
-
-      <ion-button (click)="buscar()" expand="block" class="ion-padding" [disabled]="!busquedaForm.valid || !direccionInicioSeleccionada || !direccionFinSeleccionada  " routerLink="/viaje-conductor">
-       Publicar
+      <ion-button (click)="buscar()" expand="block" class="ion-padding" [disabled]="!busquedaForm.valid || !direccionInicioSeleccionada || !direccionFinSeleccionada">
+        Publicar
       </ion-button>
 
     </form>
   </ion-card>
 
- 
-
-
-
 </ion-content>
-
-

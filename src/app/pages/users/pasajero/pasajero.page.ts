@@ -1,13 +1,12 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, forkJoin, map, Observable, Subject, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { Viaje } from 'src/app/models/viaje.model';
 import { DateService } from 'src/app/services/date.service';
-import { DireccionesService } from 'src/app/services/direcciones.service';
 import { FirebaseService } from 'src/app/services/firebase.service';
-import { NominatimService } from 'src/app/services/nominatim.service';
-import { UtilsService } from 'src/app/services/utils.service';
 import { ViajeService } from 'src/app/services/viaje.service';
+import { UtilsService } from 'src/app/services/utils.service';
+import { MapboxService } from 'src/app/services/mapbox.service';  // Importa tu servicio Mapbox
 
 @Component({
   selector: 'app-pasajero',
@@ -27,33 +26,21 @@ export class PasajeroPage implements OnInit {
   direccionInicioSeleccionada: boolean = false; // Para habilitar el botón
 
   // Inyección de dependencias
-  direccionesSvc = inject(DireccionesService);
-  datesSvc = inject(DateService)
-  fireBaseSvc = inject(FirebaseService)
-  viajeSvc = inject(ViajeService)
+  mapboxSvc = inject(MapboxService);
+  datesSvc = inject(DateService);
+  fireBaseSvc = inject(FirebaseService);
+  viajeSvc = inject(ViajeService);
   utilsSvc = inject(UtilsService);
-
 
   // Resultados de búsqueda
   searchResultsInicio: any[] = [];
   searchResultsFin: any[] = [];
   viajesDisponibles: Viaje[] = [];
 
-  //reseva coleccion
-
-  utils: any;
-
-  //obtener id viaje
-
- 
-  //obtener id pasajero
-
-  //obtener nro asiento
-
   // Subject para la búsqueda
   searchSubject: Subject<{ query: string; tipo: string }> = new Subject();
 
-  constructor(private nominatimService: NominatimService, private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder) {
     // Inicializa el formulario con validaciones
     this.busquedaForm = this.formBuilder.group({
       inicio: ['', Validators.required],
@@ -65,53 +52,17 @@ export class PasajeroPage implements OnInit {
       debounceTime(500),
       distinctUntilChanged()
     ).subscribe(({ query, tipo }) => {
-      this.nominatimService.search(query).subscribe((results) => {
+      this.mapboxSvc.search(query).subscribe((results) => {
         if (tipo === 'inicio') {
-          this.searchResultsInicio = results;
+          this.searchResultsInicio = results.features;
         } else if (tipo === 'fin') {
-          this.searchResultsFin = results;
+          this.searchResultsFin = results.features;
         }
       });
     });
   }
-  //asientos
 
-  asientoSeleccionado: number | undefined; // Guarda el asiento seleccionado
-
-
-  asientoPlaceholder: string = 'Selecciona tu asiento';
-
-  ngOnInit() {
-
-  }
-
-  // Nueva función para obtener la dirección actual al hacer clic en el icono
-  obtenerDireccionActual() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const { latitude, longitude } = position.coords;
-        
-        // Guardar las coordenadas en localStorage
-        const coordsInicio = { lat: latitude, lng: longitude };
-        localStorage.setItem('coordsInicio', JSON.stringify(coordsInicio));
-        console.log('Coordenadas de inicio guardadas en localStorage:', coordsInicio);
-  
-        // Buscar la dirección usando el servicio Nominatim
-        this.nominatimService.search(`${latitude}, ${longitude}`).subscribe((results) => {
-          if (results && results.length > 0) {
-            this.direccionInicio = results[0].display_name;
-            this.busquedaForm.get('inicio')?.setValue(this.direccionInicio); // Actualiza el formulario
-            this.direccionInicioSeleccionada = true; // Marca que la dirección de inicio es válida
-          }
-        });
-      }, (error) => {
-        console.error("Error al obtener la geolocalización:", error);
-      });
-    } else {
-      console.error("La geolocalización no está soportada en este navegador.");
-    }
-  }
-  
+  ngOnInit() {}
 
   onSearch(event: any, tipo: string) {
     const query = event.target.value;
@@ -127,25 +78,19 @@ export class PasajeroPage implements OnInit {
     }
   }
 
-
-  
-
   onSelectResult(result: any, tipo: string) {
     if (tipo === 'inicio') {
       if (this.searchResultsInicio.includes(result)) {
-        this.direccionInicio = result.display_name;
-        this.busquedaForm.get('inicio')?.setValue(this.direccionInicio); // Actualiza el formulario
-        this.direccionInicioSeleccionada = true; // Marca que la dirección de inicio es válida
+        this.direccionInicio = result.place_name;
+        this.busquedaForm.get('inicio')?.setValue(this.direccionInicio);
+        this.direccionInicioSeleccionada = true;
   
         // Verificar si las coordenadas existen en el resultado
-        if (result.lat && result.lon) {
-          const coordsInicio = {
-            lat: result.lat,
-            lng: result.lon
-          };
-          localStorage.setItem('coordsInicio', JSON.stringify(coordsInicio));
-          
-          console.log('Coordenadas de inicio guardadas:', coordsInicio);  // Verifica que se guardaron correctamente// Guardamos las coordenadas
+        if (result.geometry && result.geometry.coordinates) {
+          // Coordenadas en formato [lng, lat]
+          const coordsInicio: [number, number] = [result.geometry.coordinates[0], result.geometry.coordinates[1]];
+          localStorage.setItem('coordsInicio', JSON.stringify(coordsInicio)); // Guardamos las coordenadas en formato de tupla
+          console.log('Coordenadas de inicio guardadas:', coordsInicio);  // Verifica que se guardaron correctamente
         } else {
           console.error('No se encontraron coordenadas para la dirección de inicio');
         }
@@ -153,16 +98,14 @@ export class PasajeroPage implements OnInit {
       this.searchResultsInicio = [];
     } else if (tipo === 'fin') {
       if (this.searchResultsFin.includes(result)) {
-        this.direccionFin = result.display_name;
-        this.busquedaForm.get('fin')?.setValue(this.direccionFin); // Actualiza el formulario
+        this.direccionFin = result.place_name;
+        this.busquedaForm.get('fin')?.setValue(this.direccionFin);
   
         // Verificar si las coordenadas existen en el resultado
-        if (result.lat && result.lon) {
-          const coordsFin = {
-            lat: result.lat,
-            lon: result.lon
-          };
-          localStorage.setItem('coordsFin', JSON.stringify(coordsFin)); // Guardamos las coordenadas
+        if (result.geometry && result.geometry.coordinates) {
+          // Coordenadas en formato [lng, lat]
+          const coordsFin: [number, number] = [result.geometry.coordinates[0], result.geometry.coordinates[1]];
+          localStorage.setItem('coordsFin', JSON.stringify(coordsFin)); // Guardamos las coordenadas en formato de tupla
           console.log('Coordenadas de fin:', coordsFin); // Verifica si se guardan correctamente
         } else {
           console.error('No se encontraron coordenadas para la dirección de fin');
@@ -172,88 +115,74 @@ export class PasajeroPage implements OnInit {
     }
   }
   
-   async buscar() {
-    
+
+  async buscar() {
     const loading = await this.utilsSvc.loading();
     await loading.present();
-    
+
     const inicio = this.busquedaForm.get('inicio')?.value;
     const fin = this.busquedaForm.get('fin')?.value;
 
     if (this.busquedaForm.valid) {
-      
       this.viajeSvc.obtenerViajesFiltrados(inicio, fin).subscribe((viajes) => {
-        // Filtrar los viajes que no tienen estado 'terminado'
         this.viajesDisponibles = viajes.filter(viaje => viaje.estado === 'pendiente');
         if (this.viajesDisponibles.length === 0) {
-         this.utilsSvc.presentToast({
-           message: 'No hay viajes disponibles',
-           duration: 3000 ,
-           color: 'danger',
-           position:'middle',
-         })
+          this.utilsSvc.presentToast({
+            message: 'No hay viajes disponibles',
+            duration: 3000,
+            color: 'danger',
+            position: 'middle',
+          });
         }
         loading.dismiss();
       });
     }
-    }
-    
-//obtener id pasajero
-
- obtenerIdPasajero() {
-  const user = this.fireBaseSvc.getAuth().currentUser;
-  if (user) {
-    return user.uid;
   }
-  return null;
-}
 
+  obtenerIdPasajero() {
+    const user = this.fireBaseSvc.getAuth().currentUser;
+    if (user) {
+      return user.uid;
+    }
+    return null;
+  }
 
+  reservar(viaje: Viaje) {
+    const idPasajero = this.obtenerIdPasajero();
 
-reservar(viaje: Viaje) {
-  const idPasajero = this.obtenerIdPasajero();
+    if (idPasajero) {
+      const auto = viaje.autos[0];
+      if (viaje.reservas < auto.nroasiento) {
+        this.viajeSvc.incrementarReserva(viaje);
+        this.fireBaseSvc.updateEstadoToConductorForCurrentUser('pasajero');
 
-
-  if (idPasajero) {
-    const auto = viaje.autos[0];
-    if (viaje.reservas < auto.nroasiento) {
-      // Llamamos al método incrementarReserva del servicio
-      this.viajeSvc.incrementarReserva(viaje);
-      this.fireBaseSvc.updateEstadoToConductorForCurrentUser('pasajero');
-
-      // Muestra un mensaje de éxito
-      this.utilsSvc.presentToast({
-        message: 'Reserva realizada con éxito.',
-        duration: 1500,
-        color: 'success',
-        position: 'middle',
-        icon: 'checkmark-circle-outline',
-      });
-      this.fireBaseSvc.cambiarEstadoReserva(idPasajero, true);
-      this.utilsSvc.routerLink('/viaje-pasajero');
-      this.fireBaseSvc.agregarPasajero(viaje.id_viaje);
-
+        this.utilsSvc.presentToast({
+          message: 'Reserva realizada con éxito.',
+          duration: 1500,
+          color: 'success',
+          position: 'middle',
+          icon: 'checkmark-circle-outline',
+        });
+        this.fireBaseSvc.cambiarEstadoReserva(idPasajero, true);
+        this.utilsSvc.routerLink('/viaje-pasajero');
+        this.fireBaseSvc.agregarPasajero(viaje.id_viaje);
+      } else {
+        this.utilsSvc.presentToast({
+          message: 'No se puede realizar la reserva. No quedan cupos disponibles.',
+          duration: 1500,
+          color: 'danger',
+          position: 'middle',
+          icon: 'alert-circle-outline',
+        });
+      }
     } else {
-      // Muestra un mensaje de error si no hay cupos disponibles
       this.utilsSvc.presentToast({
-        message: 'No se puede realizar la reserva. No quedan cupos disponibles.',
+        message: 'No se pudo realizar la reserva. Inicia sesión primero.',
         duration: 1500,
         color: 'danger',
         position: 'middle',
         icon: 'alert-circle-outline',
       });
     }
-  } else {
-    // Muestra un mensaje si el usuario no está autenticado
-    this.utilsSvc.presentToast({
-      message: 'No se pudo realizar la reserva. Inicia sesión primero.',
-      duration: 1500,
-      color: 'danger',
-      position: 'middle',
-      icon: 'alert-circle-outline',
-    });
   }
-}
-
-
 }

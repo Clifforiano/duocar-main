@@ -5,11 +5,9 @@ import { Viaje } from 'src/app/models/viaje.model';
 import { DateService } from 'src/app/services/date.service';
 import { DireccionesService } from 'src/app/services/direcciones.service';
 import { FirebaseService } from 'src/app/services/firebase.service';
-import { NominatimService } from 'src/app/services/nominatim.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { ViajeService } from 'src/app/services/viaje.service';
-
-
+import * as mapboxgl from 'mapbox-gl';  // Importa Mapbox
 
 @Component({
   selector: 'app-conductor',
@@ -18,9 +16,7 @@ import { ViajeService } from 'src/app/services/viaje.service';
 })
 export class ConductorPage implements OnInit {
 
-  
   //se crea el viaje
-
   nuevoViaje: Viaje = {
     id_viaje: '',
     id_conductor: '',
@@ -51,31 +47,25 @@ export class ConductorPage implements OnInit {
   cargarNomConductor() {
     this.nuevoViaje.nom_conductor = this.fireBaseSvc.getUserName();
     console.log(this.nuevoViaje.nom_conductor);
-    return this.nuevoViaje.nom_conductor
+    return this.nuevoViaje.nom_conductor;
   }
-  
+
   //VALORES VIAJE
-   
   //ID CONDUCTOR
   cargarIdConductor() {
-    this.nuevoViaje.id_conductor = this.fireBaseSvc.idusuario()
+    this.nuevoViaje.id_conductor = this.fireBaseSvc.idusuario();
   }
 
-  //NOMBRE CONDUCTOR
-  
- 
-
   //FECHA  Y HORA INICIO
-
   obtenerFechaHora() {
     const fecha = new Date();
-   this.nuevoViaje.fecha = `${fecha.getDate().toString().padStart(2, '0')}/${(fecha.getMonth() + 1).toString().padStart(2, '0')}/${fecha.getFullYear()}`;
+    this.nuevoViaje.fecha = `${fecha.getDate().toString().padStart(2, '0')}/${(fecha.getMonth() + 1).toString().padStart(2, '0')}/${fecha.getFullYear()}`;
     this.nuevoViaje.horaInicio = `${fecha.getHours().toString().padStart(2, '0')}:${fecha.getMinutes().toString().padStart(2, '0')}:${fecha.getSeconds().toString().padStart(2, '0')}`;
   }
 
   //PRECIO VIAJE
   cargarPrecioViaje() {
-    this.nuevoViaje.precio =this.busquedaForm.get('precio')?.value;
+    this.nuevoViaje.precio = this.busquedaForm.get('precio')?.value;
   }
 
   //direccion INICIO y FINAL
@@ -94,10 +84,6 @@ export class ConductorPage implements OnInit {
       const minutos = fecha.getMinutes().toString().padStart(2, '0');
     }
   }
-  
-//dar valor asiento
-
-
 
   // Declaración de formulario
   busquedaForm: FormGroup;
@@ -111,16 +97,13 @@ export class ConductorPage implements OnInit {
   direccionFin: string = '';
   direccionInicioSeleccionada: boolean = false; // Para habilitar el botón
   direccionFinSeleccionada: boolean = false; // Para habilitar el botón
-  
-
 
   // Inyección de dependencias
   direccionesSvc = inject(DireccionesService);
-  datesSvc = inject(DateService)
-  fireBaseSvc = inject(FirebaseService)
-  viajeSvc = inject(ViajeService)
-  utilsSvc = inject(UtilsService)
-
+  datesSvc = inject(DateService);
+  fireBaseSvc = inject(FirebaseService);
+  viajeSvc = inject(ViajeService);
+  utilsSvc = inject(UtilsService);
 
   // Resultados de búsqueda
   searchResultsInicio: any[] = [];
@@ -129,7 +112,7 @@ export class ConductorPage implements OnInit {
   // Subject para la búsqueda
   searchSubject: Subject<{ query: string; tipo: string }> = new Subject();
 
-  constructor(private nominatimService: NominatimService, private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder) {
     // Inicializa el formulario con validaciones
     this.busquedaForm = this.formBuilder.group({
       inicio: ['', Validators.required],
@@ -146,46 +129,31 @@ export class ConductorPage implements OnInit {
       debounceTime(500),
       distinctUntilChanged()
     ).subscribe(({ query, tipo }) => {
-      this.nominatimService.search(query).subscribe((results) => {
+      this.buscarDireccionMapbox(query, tipo);
+    });
+  }
+
+  ngOnInit() {
+    this.obtenerFechaHora();
+    const hora_partida = this.busquedaForm.value.horaPartida;
+  }
+
+
+  // Función para buscar la dirección usando Mapbox API
+  buscarDireccionMapbox(query: string, tipo: string) {
+    const mapboxUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=pk.eyJ1IjoiY2xpZmZkdW9jIiwiYSI6ImNtM2J6dms2aDFteXcycXB0azk4b2FqN2oifQ.mVjNKoYMZpBl26cOVMJUwQ`;
+
+    fetch(mapboxUrl)
+      .then(response => response.json())
+      .then(data => {
+        const results = data.features;
         if (tipo === 'inicio') {
           this.searchResultsInicio = results;
         } else if (tipo === 'fin') {
           this.searchResultsFin = results;
         }
-      });
-    });
-  }
-
-
-
-
-  ngOnInit() {
-    this.obtenerFechaHora();
-    const hora_partida = this.busquedaForm.value.horaPartida;
- 
-
-    
-    // No es necesario obtener la dirección actual aquí
-  }
-
-  // Nueva función para obtener la dirección actual al hacer clic en el icono
-  obtenerDireccionActual() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const { latitude, longitude } = position.coords;
-        this.nominatimService.search(`${latitude}, ${longitude}`).subscribe((results) => {
-          if (results && results.length > 0) {
-            this.direccionInicio = results[0].display_name;
-            this.busquedaForm.get('inicio')?.setValue(this.direccionInicio); // Actualiza el formulario
-            this.direccionInicioSeleccionada = true; // Marca que la dirección de inicio es válida
-          }
-        });
-      }, (error) => {
-        console.error("Error al obtener la geolocalización:", error);
-      });
-    } else {
-      console.error("La geolocalización no está soportada en este navegador.");
-    }
+      })
+      .catch(error => console.error('Error al obtener la dirección de Mapbox:', error));
   }
 
   onSearch(event: any, tipo: string) {
@@ -201,27 +169,21 @@ export class ConductorPage implements OnInit {
       }
     }
   }
+
   onSelectResult(result: any, tipo: string) {
     if (tipo === 'inicio') {
-        if (this.searchResultsInicio.includes(result)) {
-            this.direccionInicio = result.display_name;
-            this.busquedaForm.get('inicio')?.setValue(this.direccionInicio); // Actualiza el formulario
-            this.direccionInicioSeleccionada = true; // Marca que la dirección de inicio es válida
-        }
-        this.searchResultsInicio = [];
+      this.direccionInicio = result.place_name;
+      this.busquedaForm.get('inicio')?.setValue(this.direccionInicio); // Actualiza el formulario
+      this.direccionInicioSeleccionada = true; // Marca que la dirección de inicio es válida
+      this.searchResultsInicio = [];
     } else if (tipo === 'fin') {
-        if (this.searchResultsFin.includes(result)) {
-            this.direccionFin = result.display_name;
-            this.busquedaForm.get('fin')?.setValue(this.direccionFin); // Actualiza el formulario
-            this.direccionFinSeleccionada = true; // Marca que la dirección de fin es válida
-
-                 // Actualizar la dirección de destino en el servicio
-            this.viajeSvc.setDestino(this.direccionFin);
-
-        }
-        this.searchResultsFin = [];
+      this.direccionFin = result.place_name;
+      this.busquedaForm.get('fin')?.setValue(this.direccionFin); // Actualiza el formulario
+      this.direccionFinSeleccionada = true; // Marca que la dirección de fin es válida
+      this.viajeSvc.setDestino(this.direccionFin);
+      this.searchResultsFin = [];
     }
-}
+  }
 
   async buscar() {
     if (this.busquedaForm.valid && this.direccionInicioSeleccionada) {
@@ -234,7 +196,7 @@ export class ConductorPage implements OnInit {
       this.cargarNomConductor();
       // Esperar a que se carguen los autos
       await this.cargarauto();
-  
+
       // Luego, crea el viaje en la base de datos
       try {
         const viajeId = await this.viajeSvc.guardarViaje(this.nuevoViaje);
@@ -248,9 +210,7 @@ export class ConductorPage implements OnInit {
           position: 'middle',
           duration: 2000,
           icon: 'checkmark-circle-outline',
-
         })
-       
       } catch (error) {
         this.utilsSvc.presentToast({
           message: 'Error al crear el viaje: ' + error.message,
@@ -262,10 +222,5 @@ export class ConductorPage implements OnInit {
       }
     }
   }
-  
-  }
-  
 
-
-
-
+}

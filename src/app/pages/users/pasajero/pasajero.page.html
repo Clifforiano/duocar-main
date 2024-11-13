@@ -17,13 +17,13 @@
             (ionInput)="onSearch($event, 'inicio')"
             formControlName="inicio"
           >
-            <ion-icon slot="end" name="pin" size="large" (click)="obtenerDireccionActual()"></ion-icon> <!-- Añadido el evento click aquí -->
+            <ion-icon slot="end" name="pin" size="large"></ion-icon> <!-- Añadido el evento click aquí -->
           </ion-input>
       
           <!-- Lista de resultados para la dirección de inicio -->
           <ion-list *ngIf="searchResultsInicio.length > 0">
             <ion-item *ngFor="let result of searchResultsInicio" (click)="onSelectResult(result, 'inicio')">
-              {{ result.display_name }}
+              {{ result.display_name || result.place_name }}
             </ion-item>
           </ion-list>
       
@@ -41,7 +41,7 @@
           <!-- Lista de resultados para la dirección de fin -->
           <ion-list *ngIf="searchResultsFin.length > 0">
             <ion-item *ngFor="let result of searchResultsFin" (click)="onSelectResult(result, 'fin')">
-              {{ result.display_name }}
+              {{ result.display_name || result.place_name }}
             </ion-item>
           </ion-list>
     
