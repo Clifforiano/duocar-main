@@ -3,6 +3,9 @@ import { MapaboxService } from 'src/app/services/mapabox.service';
 import mapboxgl from 'mapbox-gl';
 import { MapboxService } from 'src/app/services/mapbox.service';
 import {inject} from '@angular/core';
+import { FirebaseService } from 'src/app/services/firebase.service';
+import { ViajeService } from 'src/app/services/viaje.service';
+import { UtilsService } from 'src/app/services/utils.service';
 
 
 @Component({
@@ -12,9 +15,19 @@ import {inject} from '@angular/core';
 })
 export class ViajePasajeroPage implements OnInit, AfterViewInit {
 
+  firebaseService = inject(FirebaseService);
+  viajeSvc = inject(ViajeService);
+  utilsSvc = inject(UtilsService);
+  
   constructor(private mapaboxService: MapaboxService) {}
 
-  ngOnInit() {}
+  id_viaje=''
+ 
+  ngOnInit() {
+    this.id_viaje = localStorage.getItem('id_viaje') || '';
+    console.log(this.id_viaje);
+
+  }
 
   ngAfterViewInit() {
     // Llamar al método buildMap después de que la vista haya sido cargada
@@ -23,6 +36,10 @@ export class ViajePasajeroPage implements OnInit, AfterViewInit {
 
   // Método para inicializar el mapa
   async inicializarMapa() {
+    // Crear y mostrar el cargador desde el utilsSvc
+    const loading = await this.utilsSvc.loading();  
+    await loading.present();  // Muestra el cargador
+
     try {
       // Crear el mapa
       const mapa = await this.mapaboxService.buildMap((map) => {
@@ -41,16 +58,47 @@ export class ViajePasajeroPage implements OnInit, AfterViewInit {
           this.mapaboxService.obtenerRuta(map, coordsInicio, coordsFin)
             .then(() => {
               console.log('Ruta mostrada en el mapa');
+              loading.dismiss();  // Ocultar el cargador cuando se muestra la ruta
             })
             .catch((error) => {
               console.error('Error al obtener la ruta:', error);
+              loading.dismiss();  // Ocultar el cargador en caso de error
             });
         } else {
           console.error('No se encontraron coordenadas en localStorage');
+          loading.dismiss();  // Ocultar el cargador si no hay coordenadas
         }
       });
     } catch (error) {
       console.error('Error al inicializar el mapa', error);
+      loading.dismiss();  // Ocultar el cargador en caso de error
     }
   }
+
+
+  cancelar() {
+    if (!this.id_viaje) {
+      console.error('El ID del viaje está vacío');
+      return;  // Salir si no hay un ID de viaje
+    }
+  
+    this.firebaseService.eliminarPasajero(this.id_viaje, this.firebaseService.getCurrentUserId()).then(() => {
+      this.viajeSvc.obtenerViajePorId(this.id_viaje).subscribe((viaje) => {
+        this.viajeSvc.decrementarReserva(viaje);
+        this.firebaseService.updateEstadoPasajero(this.firebaseService.getCurrentUserId(), 'neutro');
+        this.firebaseService.cambiarEstadoReserva(this.firebaseService.getCurrentUserId(), false);
+      
+        this.utilsSvc.presentToast({
+          message: 'Viaje cancelado con exito.',
+          duration: 1500,
+          color: 'success',
+          position: 'middle',
+          icon: 'checkmark-circle-outline',
+        });
+        this.utilsSvc.routerLink('home');
+      });
+    });
+  }
+  
+
 }

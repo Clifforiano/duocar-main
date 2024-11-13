@@ -49,6 +49,11 @@ export class ViajeService {
     return this.firestore.collection<Viaje>('viajes').valueChanges();
   }
 
+  //obtener viajes por id viajes
+  obtenerViajePorId(id: string): Observable<Viaje | undefined> {
+    return this.firestore.collection<Viaje>('viajes').doc(id).valueChanges();
+  }
+
 //obtener reservas
 
 

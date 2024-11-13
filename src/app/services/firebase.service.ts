@@ -407,6 +407,28 @@ getConductorIds(): Observable<string[]> {
   );
 }
 
+//quitar usuarios de reserva vijea
+eliminarPasajero(idViaje: string, idPasajero: string): Promise<void> {
+  const viajeRef = this.firestore.collection('viajes').doc(idViaje);
+  
+  return viajeRef.get().toPromise().then(docSnapshot => {
+    if (docSnapshot.exists) {
+      const viajeData = docSnapshot.data() as Viaje;
+      const idPasajeros = viajeData.id_pasajero || [];
+
+      // Filtramos el array de pasajeros para eliminar el pasajero con el id dado
+      const nuevosPasajeros = idPasajeros.filter(id => id !== idPasajero);
+
+      // Actualizamos el documento con el nuevo array de pasajeros
+      return viajeRef.update({
+        id_pasajero: nuevosPasajeros
+      });
+    } else {
+      throw new Error('Viaje no encontrado');
+    }
+  });
+}
+
 
 agregarAlHistorialPorId(viajeId: string): Observable<void> {
   return new Observable(observer => {
