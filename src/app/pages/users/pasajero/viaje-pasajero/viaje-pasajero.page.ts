@@ -27,7 +27,24 @@ export class ViajePasajeroPage implements OnInit, AfterViewInit {
     this.id_viaje = localStorage.getItem('id_viaje') || '';
     console.log(this.id_viaje);
 
+  this.getEstado();    
+
   }
+
+ getEstado(){
+  this.viajeSvc.getEstadoViaje(this.id_viaje).subscribe((estado) => {
+    if (estado !== 'pendiente') {
+      this.utilsSvc.presentToast({
+        message: 'El viaje fue cancelado por el conductor.',
+        color: 'danger',
+        position: 'middle',
+        duration: 2000,
+        icon: 'close-circle-outline',
+      })
+      this.utilsSvc.routerLink('/home');
+    }
+  })
+ }
 
   ngAfterViewInit() {
     // Llamar al método buildMap después de que la vista haya sido cargada
