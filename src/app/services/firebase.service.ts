@@ -161,6 +161,24 @@ updateEstadoToConductorForCurrentUser(estado : string) {
   });
 }
 
+//cambiar estado pasajero
+
+updateEstadoPasajero(uid: string, estado: string) {
+  this.firestore.collection('users').doc(uid).update({
+    estado: estado
+  }).then(() => {
+    console.log('Estado del pasajero actualizado');
+  }).catch((error) => {
+    console.error('Error al actualizar el estado:', error);
+  });
+}
+
+//obtener cantidad pasajeros por viaje
+obtenerPasajeros(viajeId: string) {
+  return this.firestore.collection('pasajeros', ref => ref.where('id_viaje', '==', viajeId)).get();
+}
+
+
 //obtener estado
 
 getEstadoOfCurrentUser(): Observable<string | null> {

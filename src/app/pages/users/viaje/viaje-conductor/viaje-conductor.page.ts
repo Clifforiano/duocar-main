@@ -11,17 +11,18 @@ import { ViajeService } from 'src/app/services/viaje.service';
 export class ViajeConductorPage implements OnInit {
   public pasajeros: any[] = [];  // Arreglo para almacenar los pasajeros del viaje
   private cachedUsuarios: { [id: string]: any } = {}; // Cache para los usuarios obtenidos
-  
+
 
   utilsSvc = inject(UtilsService);
   firebaseSvc = inject(FirebaseService);
 
   constructor(private viajeService: ViajeService) {
-    
+
   }
 
-  viajeid=""
+  viajeid = ""
   ngOnInit() {
+
 
 
     // Obtener el ID del viaje pendiente para el usuario autenticado
@@ -29,13 +30,15 @@ export class ViajeConductorPage implements OnInit {
       if (viajeId) {
         // Si se encontró un viaje pendiente, obtener los pasajeros
         this.obtenerPasajerosDeViaje(viajeId);
-        this.viajeid=viajeId
+        this.viajeid = viajeId
       } else {
         console.log('No hay un viaje pendiente para el usuario autenticado.');
-      
+
       }
     });
   }
+
+
 
   //obtener hora sistema
   obtenerHoraSistema() {
@@ -50,7 +53,7 @@ export class ViajeConductorPage implements OnInit {
   async obtenerPasajerosDeViaje(viajeId: string) {
     const loading = await this.utilsSvc.loading();
     await loading.present();
-  
+
     // Verificar el estado del viaje antes de continuar
     this.viajeService.getEstadoViaje(viajeId).subscribe(
       async estado => {
@@ -94,22 +97,39 @@ export class ViajeConductorPage implements OnInit {
       }
     );
   }
-  
+
 
   async cancelarViaje() {
+    // Actualizar historial y estado del viaje
     await this.firebaseSvc.agregarAlHistorialPorId(this.viajeid).subscribe();
     await this.firebaseSvc.cambiarEstadoViaje(this.viajeid, 'cancelado');
+    await this.firebaseSvc.cambiarHoraFinViaje(this.viajeid, this.obtenerHoraSistema());
     await this.firebaseSvc.updateEstadoToConductorForCurrentUser('neutro');
     await this.firebaseSvc.updateEstadoConductor(this.firebaseSvc.idusuario(), false);
-    await this.firebaseSvc.cambiarHoraFinViaje(this.viajeid, this.obtenerHoraSistema());
-    
+
+    // Recorrer todas las IDs y acceder a los datos de cada usuario
+    Object.keys(this.cachedUsuarios).forEach(id => {
+      const usuario = this.cachedUsuarios[id];
+      console.log(`ID: ${id}, Usuario:`, usuario);
+      this.firebaseSvc.updateEstadoPasajero(id, 'neutro');
+      this.firebaseSvc.cambiarEstadoReserva(id, false);
+      this.utilsSvc.routerLink('/home');
+        this.utilsSvc.presentToast({
+          message: 'Tu viaje a sido cancelado',
+          color: 'danger',
+          position: 'middle',
+          duration: 2000,
+          icon: 'alert-circle-outline',
+        })
+    });
+    // Navegar al home y mostrar el toast de éxito
     this.utilsSvc.routerLink('home');
     this.utilsSvc.presentToast({
-      message: 'Viaje cancelado con exito',
+      message: 'Viaje cancelado con éxito',
       color: 'success',
       position: 'middle',
       duration: 2000,
       icon: 'checkmark-circle-outline',
-    })
+    });
   }
 }

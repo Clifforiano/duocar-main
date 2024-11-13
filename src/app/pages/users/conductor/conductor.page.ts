@@ -240,6 +240,7 @@ export class ConductorPage implements OnInit {
         const viajeId = await this.viajeSvc.guardarViaje(this.nuevoViaje);
         this.fireBaseSvc.updateEstadoToConductorForCurrentUser('conductor');
         this.fireBaseSvc.updateEstadoConductor(this.fireBaseSvc.idusuario(), true);
+        this.utilsSvc.routerLink('/home');
 
         this.utilsSvc.presentToast({
           message: 'Viaje creado con exito',

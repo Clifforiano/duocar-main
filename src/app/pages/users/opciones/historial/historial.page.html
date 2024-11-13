@@ -1,8 +1,9 @@
 <app-c-header [titulo]="'historial'"></app-c-header>
 
 <ion-content>
-  <ion-list *ngIf="historial$ | async as historial; else noHistorial">
-    <ion-item *ngFor="let viaje of historial">
+  <!-- Muestra el historial si existen datos -->
+  <ion-list *ngIf="(historial$ | async)?.length > 0; else noHistorial">
+    <ion-item *ngFor="let viaje of historial$ | async">
       <ion-card>
         <ion-card-header>
           <ion-card-title>{{ viaje.nomconductor }}</ion-card-title>
@@ -18,7 +19,10 @@
     </ion-item>
   </ion-list>
 
+  <!-- Mensaje cuando no hay historial -->
   <ng-template #noHistorial>
-    <ion-text>No tienes viajes en el historial.</ion-text>
+    <ion-text color="medium" class="ion-text-center">
+      <h2>Sin datos en el historial</h2>
+    </ion-text>
   </ng-template>
 </ion-content>

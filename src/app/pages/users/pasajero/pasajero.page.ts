@@ -181,11 +181,13 @@ export class PasajeroPage implements OnInit {
 reservar(viaje: Viaje) {
   const idPasajero = this.obtenerIdPasajero();
 
+
   if (idPasajero) {
     const auto = viaje.autos[0];
     if (viaje.reservas < auto.nroasiento) {
       // Llamamos al método incrementarReserva del servicio
       this.viajeSvc.incrementarReserva(viaje);
+      this.fireBaseSvc.updateEstadoToConductorForCurrentUser('pasajero');
 
       // Muestra un mensaje de éxito
       this.utilsSvc.presentToast({
