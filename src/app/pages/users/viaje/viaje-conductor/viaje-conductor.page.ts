@@ -113,14 +113,6 @@ export class ViajeConductorPage implements OnInit {
       console.log(`ID: ${id}, Usuario:`, usuario);
       this.firebaseSvc.updateEstadoPasajero(id, 'neutro');
       this.firebaseSvc.cambiarEstadoReserva(id, false);
-      this.utilsSvc.routerLink('/home');
-        this.utilsSvc.presentToast({
-          message: 'Tu viaje a sido cancelado',
-          color: 'danger',
-          position: 'middle',
-          duration: 2000,
-          icon: 'alert-circle-outline',
-        })
     });
     // Navegar al home y mostrar el toast de éxito
     this.utilsSvc.routerLink('home');
@@ -132,4 +124,32 @@ export class ViajeConductorPage implements OnInit {
       icon: 'checkmark-circle-outline',
     });
   }
-}
+
+
+ async terminar() {
+     // Actualizar historial y estado del viaje
+     await this.firebaseSvc.agregarAlHistorialPorId(this.viajeid).subscribe();
+     await this.firebaseSvc.cambiarEstadoViaje(this.viajeid, 'finalizado');
+     await this.firebaseSvc.cambiarHoraFinViaje(this.viajeid, this.obtenerHoraSistema());
+     await this.firebaseSvc.updateEstadoToConductorForCurrentUser('neutro');
+     await this.firebaseSvc.updateEstadoConductor(this.firebaseSvc.idusuario(), false);
+ 
+     // Recorrer todas las IDs y acceder a los datos de cada usuario
+     Object.keys(this.cachedUsuarios).forEach(id => {
+       const usuario = this.cachedUsuarios[id];
+       console.log(`ID: ${id}, Usuario:`, usuario);
+       this.firebaseSvc.updateEstadoPasajero(id, 'neutro');
+       this.firebaseSvc.cambiarEstadoReserva(id, false);
+     });
+     // Navegar al home y mostrar el toast de éxito
+     this.utilsSvc.routerLink('home');
+     this.utilsSvc.presentToast({
+       message: 'Viaje cancelado con éxito',
+       color: 'success',
+       position: 'middle',
+       duration: 2000,
+       icon: 'checkmark-circle-outline',
+     });
+   }
+ }
+

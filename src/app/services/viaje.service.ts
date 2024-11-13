@@ -142,6 +142,7 @@ getIdsPasajerosDeViaje(viajeId: string): Observable<string[] | undefined> {
     );
 }
 
+//bug aca arreglar
 getUsuarioPorId(id: string): Observable<any> {
   console.log('Buscando datos para el pasajero con ID:', id);  // Log del ID que se busca
   return this.firestore

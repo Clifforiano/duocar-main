@@ -435,6 +435,7 @@ agregarAlHistorialPorId(viajeId: string): Observable<void> {
           precio: viaje.precio,
           id_conductor: viaje.id_conductor,
           fecha: viaje.fecha,
+          estado: viaje.estado,
           nomconductor: viaje.nom_conductor,
           dirrecionInicio: viaje.dirrecionInicio,
           horaInicio: viaje.horaInicio,
