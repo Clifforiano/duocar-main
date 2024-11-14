@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Platform, AlertController } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-root',
@@ -6,5 +8,20 @@ import { Component } from '@angular/core';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor() {}
+  constructor(private platform: Platform, private alertController: AlertController) {
+    this.initializeApp();
+  }
+
+  initializeApp() {
+    this.platform.ready().then(() => {
+      this.blockBackButton();
+    });
+  }
+
+  blockBackButton() {
+    this.platform.backButton.subscribeWithPriority(10, async () => {
+      
+    });
+  }
+
 }

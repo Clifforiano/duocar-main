@@ -22,6 +22,8 @@ export class ViajePasajeroPage implements OnInit, AfterViewInit {
   constructor(private mapaboxService: MapaboxService) {}
 
   id_viaje=''
+  inicio: [number, number]
+  fin: [number, number]
  
   ngOnInit() {
     this.id_viaje = localStorage.getItem('id_viaje') || '';
@@ -70,9 +72,13 @@ export class ViajePasajeroPage implements OnInit, AfterViewInit {
         if (coordsInicioString && coordsFinString) {
           const coordsInicio: [number, number] = JSON.parse(coordsInicioString);
           const coordsFin: [number, number] = JSON.parse(coordsFinString);
-          
+
+          this.inicio=coordsInicio;
+          this.fin=coordsFin;
+
+     
           // Llamar al servicio para trazar la ruta
-          this.mapaboxService.obtenerRuta(map, coordsInicio, coordsFin)
+          this.mapaboxService.obtenerRuta(map, this.inicio, this.fin)
             .then(() => {
               console.log('Ruta mostrada en el mapa');
               loading.dismiss();  // Ocultar el cargador cuando se muestra la ruta
