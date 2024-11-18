@@ -200,9 +200,38 @@ getEstadoViaje(viajeId: string): Observable<string> {
 }
 
 
- // Método para obtener el historial de viajes de un usuario
- 
+ // obtener cantidad de reservas
+obtenerReservas(viajeId: string): Observable<number> {
+  return this.firestore
+    .collection('viajes')
+    .doc(viajeId)
+    .valueChanges()
+    .pipe(
+      map((data: any) => data?.reservas || 0)
+    );
 }
 
+//obtener asiento auto x id
+obtenerAsientoAuto(userId: string): Observable<number> {
+ return this.firestore
+    .collection('autos', ref => ref.where('uid', '==', userId))
+    .valueChanges()
+    .pipe(
+      map((data: any) => data[0]?.asientos || 0)
+    )
+}
+//OBTENER id conductor
+obtenerIdConductor(viajeId: string): Observable<string> {
+  return this.firestore
+    .collection('viajes')
+    .doc(viajeId)
+    .valueChanges()
+    .pipe(
+      map((data: any) => data?.id_conductor || '')
+    );
+}
+
+
+}
 
 

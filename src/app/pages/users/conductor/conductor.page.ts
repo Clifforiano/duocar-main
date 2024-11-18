@@ -200,6 +200,7 @@ export class ConductorPage implements OnInit {
       // Luego, crea el viaje en la base de datos
       try {
         const viajeId = await this.viajeSvc.guardarViaje(this.nuevoViaje);
+        localStorage.setItem('viajeconductor', JSON.stringify(this.nuevoViaje));
         this.fireBaseSvc.updateEstadoToConductorForCurrentUser('conductor');
         this.fireBaseSvc.updateEstadoConductor(this.fireBaseSvc.idusuario(), true);
         this.utilsSvc.routerLink('/home');

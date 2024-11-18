@@ -82,13 +82,15 @@
                   
                   <h2>Automóvil: {{ auto.marca }} {{ auto.modelo }} {{ auto.color }}</h2>
                   <h2>Fecha: {{ viaje.fecha || 'No especificada' }}</h2>
-                  <h2>Hora: {{ viaje.horaInicio }}</h2>
+                  <h2>Hora partida: {{ viaje.horaInicio }}</h2>
+          
 
-
-
-              
+                  <h2>Dirección de partida: {{ viaje.dirrecionInicio }}</h2>
+                  <h2>Dirección de llegada: {{ viaje.dirrecionFinal }}</h2>
+                  <h2>Asientos disponibles:{{ viaje.reservas }}/{{viaje.autos[0].nroasiento}}</h2>
 
                 </div>
+
               </ion-card-content>
               <ion-card-content>
 

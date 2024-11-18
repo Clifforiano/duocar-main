@@ -1,4 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { Viaje } from 'src/app/models/viaje.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { ViajeService } from 'src/app/services/viaje.service';
@@ -21,9 +22,32 @@ export class ViajeConductorPage implements OnInit {
   }
 
   viajeid = ""
+  n_conductor = ""
+  precio : any
+  fecha = ""
+  hora_inicio = ""
+  direccion_inicio = ""
+  direccion_final = ""
+  reservas= 0
+
   ngOnInit() {
 
+    const storedViaje = localStorage.getItem('viajeconductor');
+    if (storedViaje) {
+      // Convertir el JSON a un objeto
+      const viajeconductor: Viaje = JSON.parse(storedViaje);
+    
+      // Acceder a propiedades específicas
+      this.n_conductor = viajeconductor.nom_conductor;
+      this.precio = viajeconductor.precio;
+      this.fecha = viajeconductor.fecha;
+      this.hora_inicio = viajeconductor.horaInicio;
+      this.direccion_inicio = viajeconductor.dirrecionInicio;
+      this.direccion_final = viajeconductor.dirrecionFinal;
 
+    }
+
+  
 
     // Obtener el ID del viaje pendiente para el usuario autenticado
     this.firebaseSvc.getPendingTripId().subscribe(viajeId => {
@@ -31,6 +55,11 @@ export class ViajeConductorPage implements OnInit {
         // Si se encontró un viaje pendiente, obtener los pasajeros
         this.obtenerPasajerosDeViaje(viajeId);
         this.viajeid = viajeId
+
+        this.viajeService.obtenerReservas(this.viajeid).subscribe(reservas => {
+          this.reservas = reservas
+        });
+
       } else {
         console.log('No hay un viaje pendiente para el usuario autenticado.');
 

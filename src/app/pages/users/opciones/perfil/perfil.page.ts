@@ -22,9 +22,9 @@ export class PerfilPage implements OnInit {
 
   ngOnInit() {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    this.userName = user.nombre || 'Invitado'; // Asigna el nombre o 'Invitado' si no existe
-    this.userapellido = user.apellido || 'Invitado';
-    this. userMail = user.email || 'Invitado';
+    this.userName = user.nombre || 'Sin datos'; // Asigna el nombre o 'Invitado' si no existe
+    this.userapellido = user.apellido || 'Sin datos';
+    this. userMail = user.email || 'Sin datos';
     
   }
 

@@ -25,6 +25,9 @@ export class PasajeroPage implements OnInit {
   direccionFin: string = '';
   direccionInicioSeleccionada: boolean = false; // Para habilitar el botón
 
+  cantidad_asiento= 0;
+  cantidad_reservas= 0;
+
   // Inyección de dependencias
   mapboxSvc = inject(MapboxService);
   datesSvc = inject(DateService);
@@ -62,7 +65,10 @@ export class PasajeroPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+
+
+  }
 
   onSearch(event: any, tipo: string) {
     const query = event.target.value;

@@ -21,7 +21,7 @@ export class HomePage implements OnInit {
   ngOnInit() {
 // Recuperar el objeto desde localStorage
 const user = JSON.parse(localStorage.getItem('user') || '{}');
-this.userName = user.nombre || 'Invitado'; // Asigna el nombre o 'Invitado' si no existe
+this.userName = user.nombre || 'Sin Datos'; // Asigna el nombre o 'Invitado' si no existe
 
 
 // Acceder a valores específicos
