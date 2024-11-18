@@ -13,7 +13,6 @@ export class ConductorGuard implements CanActivate {
   utilsSvc = inject(UtilsService);
 
   constructor(private firebaseService: FirebaseService, private router: Router) {}
-
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
@@ -23,6 +22,7 @@ export class ConductorGuard implements CanActivate {
         if (authState) {
           const uid = authState.uid; // Obtenemos el UID del estado de autenticación
           return this.firebaseService.getEstadoConductor(uid).pipe( // Aquí resuelves el estado del conductor
+            
             map(estado_conductor => {
               if (estado_conductor) {
                 // Si el conductor ya tiene un viaje en curso, redirige a /home y muestra el mensaje

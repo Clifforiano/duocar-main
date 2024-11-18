@@ -59,10 +59,10 @@ export class ViajeService {
 
 
 
-obtenerViajesFiltrados(inicio: string, fin: string): Observable<Viaje[]> {
+obtenerViajesFiltrados(inicio: string): Observable<Viaje[]> {
   return this.firestore
     .collection<Viaje>('viajes', ref =>
-      ref.where('dirrecionInicio', '==', inicio).where('dirrecionFinal', '==', fin)
+      ref.where('dirrecionInicio', '==', inicio)
     )
     .valueChanges();
 }

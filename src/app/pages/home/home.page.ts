@@ -19,15 +19,26 @@ export class HomePage implements OnInit {
   constructor() { }
 
   ngOnInit() {
+// Recuperar el objeto desde localStorage
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+this.userName = user.nombre || 'Invitado'; // Asigna el nombre o 'Invitado' si no existe
+
+
+// Acceder a valores específicos
+
   }
-  
+  userName: string = ''; // Variable para almacenar el nombre del usuario
 
 
   signOut() {
-    this.firebaseSvc.signOut(); // Cambia 'singOut' a 'signOut'
-  }
+    this.fireSvc.signOut();
+    localStorage.removeItem('user');
+    }
 
-  estadoactual=""
+  estadoactual="" 
+
+
+
 
   irViaje() {
     this.firebaseSvc.getEstadoOfCurrentUser().subscribe(estado => {

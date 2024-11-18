@@ -13,9 +13,10 @@ import { UtilsService } from '../services/utils.service';
 export class RoleGuard implements CanActivate {
 
     utilsSvc=inject(UtilsService);
-
+    rol=localStorage
   constructor(private auth: AngularFireAuth, private userService: FirebaseService, private router: Router) {}
 
+  
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     return this.auth.user.pipe(
       switchMap(user => {

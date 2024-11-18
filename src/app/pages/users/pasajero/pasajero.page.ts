@@ -121,10 +121,9 @@ export class PasajeroPage implements OnInit {
     await loading.present();
 
     const inicio = this.busquedaForm.get('inicio')?.value;
-    const fin = this.busquedaForm.get('fin')?.value;
 
     if (this.busquedaForm.valid) {
-      this.viajeSvc.obtenerViajesFiltrados(inicio, fin).subscribe((viajes) => {
+      this.viajeSvc.obtenerViajesFiltrados(inicio ).subscribe((viajes) => {
         this.viajesDisponibles = viajes.filter(viaje => viaje.estado === 'pendiente');
         if (this.viajesDisponibles.length === 0) {
           this.utilsSvc.presentToast({

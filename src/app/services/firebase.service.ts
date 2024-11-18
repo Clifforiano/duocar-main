@@ -11,6 +11,7 @@ import { Viaje } from '../models/viaje.model';
 import {switchMap} from 'rxjs/operators'
 import {of} from 'rxjs'
 import { HistorialViaje } from '../models/historial.model';
+import { NetworkService } from './internet.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,7 @@ export class FirebaseService {
   auth = inject(AngularFireAuth);
   firestore = inject(AngularFirestore);
   utilsSvc=inject(UtilsService);
+  netSvc=inject(NetworkService)
 
 
 
@@ -133,7 +135,7 @@ cambiarHoraFinViaje(viajeId: string, horaFin: string) {
 //obtener nombre de usuario
 
 getUserName() {
-  const user = getAuth().currentUser;
+  const user =  getAuth().currentUser;
   if (user) {
       console.log('Usuario autenticado:', user.displayName);
       return user.displayName; 
@@ -142,6 +144,12 @@ getUserName() {
       return null; // O un valor por defecto
   }
 }
+
+//get user
+getUser(uid: string) {
+  return this.firestore.collection<User>('users').doc(uid).get();
+}
+
 //cambiar estado
 
 updateEstadoToConductorForCurrentUser(estado : string) {
@@ -177,6 +185,8 @@ updateEstadoPasajero(uid: string, estado: string) {
 obtenerPasajeros(viajeId: string) {
   return this.firestore.collection('pasajeros', ref => ref.where('id_viaje', '==', viajeId)).get();
 }
+
+//get username  
 
 
 //obtener estado
