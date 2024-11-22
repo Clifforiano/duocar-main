@@ -24,12 +24,12 @@ export class RoleGuard implements CanActivate {
           return this.userService.getUserState(user.uid).pipe(
             map(estado => {
               const expectedRole = route.data['expectedRole'];
-              if (estado === expectedRole || estado === 'neutro') {
+              if (estado === expectedRole || estado === 'neutro' || localStorage.getItem('estado') === 'neutro') {
                 return true;
               } else {
                 // Muestra un mensaje y redirige si el usuario tiene otro rol activo
                 this.utilsSvc.presentToast({
-                  message: `En este momento tienes un viaje en curso como ${estado}.`,
+                  message: `En este momento tienes un viaje en curso como ${localStorage.getItem('estado')}.`,
                   duration: 1500,
                   color: 'danger',
                   position: 'middle'

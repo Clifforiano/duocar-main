@@ -24,18 +24,20 @@ export class ViajePasajeroPage implements OnInit, AfterViewInit {
   id_viaje=''
   inicio: [number, number]
   fin: [number, number]
+  estado_viaje='';
  
   ngOnInit() {
     this.id_viaje = localStorage.getItem('id_viaje') || '';
     console.log(this.id_viaje);
+    this.estado_viaje= localStorage.getItem('estado_viaje') || '';
 
   this.getEstado();    
 
   }
 
  getEstado(){
-  this.viajeSvc.getEstadoViaje(this.id_viaje).subscribe((estado) => {
-    if (estado !== 'pendiente') {
+ 
+    if (this.estado_viaje !== 'pendiente') {
       this.utilsSvc.presentToast({
         message: 'El viaje fue cancelado por el conductor.',
         color: 'danger',
@@ -45,7 +47,6 @@ export class ViajePasajeroPage implements OnInit, AfterViewInit {
       })
       this.utilsSvc.routerLink('/home');
     }
-  })
  }
 
   ngAfterViewInit() {
@@ -86,6 +87,13 @@ export class ViajePasajeroPage implements OnInit, AfterViewInit {
             .catch((error) => {
               console.error('Error al obtener la ruta:', error);
               loading.dismiss();  // Ocultar el cargador en caso de error
+              this.utilsSvc.presentToast({
+                message: 'Error al obtener la ruta: ' + error,
+                color: 'danger',
+                position: 'middle',
+                duration: 2000,
+                icon: 'close-circle-outline',
+              })
             });
         } else {
           console.error('No se encontraron coordenadas en localStorage');
@@ -95,6 +103,13 @@ export class ViajePasajeroPage implements OnInit, AfterViewInit {
     } catch (error) {
       console.error('Error al inicializar el mapa', error);
       loading.dismiss();  // Ocultar el cargador en caso de error
+      this.utilsSvc.presentToast({
+        message: 'Error al inicializar el mapa: ' + error,
+        color: 'danger',
+        position: 'middle',
+        duration: 2000,
+        icon: 'close-circle-outline',
+      })
     }
   }
 
@@ -110,6 +125,8 @@ export class ViajePasajeroPage implements OnInit, AfterViewInit {
         this.viajeSvc.decrementarReserva(viaje);
         this.firebaseService.updateEstadoPasajero(this.firebaseService.getCurrentUserId(), 'neutro');
         this.firebaseService.cambiarEstadoReserva(this.firebaseService.getCurrentUserId(), false);
+        localStorage.setItem('estado_pasajero', 'false');
+        localStorage.setItem('estado', 'neutro');
       
         this.utilsSvc.presentToast({
           message: 'Viaje cancelado con exito.',

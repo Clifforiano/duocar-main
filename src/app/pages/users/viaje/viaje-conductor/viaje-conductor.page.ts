@@ -135,6 +135,8 @@ export class ViajeConductorPage implements OnInit {
     await this.firebaseSvc.cambiarHoraFinViaje(this.viajeid, this.obtenerHoraSistema());
     await this.firebaseSvc.updateEstadoToConductorForCurrentUser('neutro');
     await this.firebaseSvc.updateEstadoConductor(this.firebaseSvc.idusuario(), false);
+    localStorage.setItem('estado_conductor', 'false');
+    localStorage.setItem('estado', 'neutro');
 
     // Recorrer todas las IDs y acceder a los datos de cada usuario
     Object.keys(this.cachedUsuarios).forEach(id => {

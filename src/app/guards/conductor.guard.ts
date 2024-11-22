@@ -24,7 +24,7 @@ export class ConductorGuard implements CanActivate {
           return this.firebaseService.getEstadoConductor(uid).pipe( // Aquí resuelves el estado del conductor
             
             map(estado_conductor => {
-              if (estado_conductor) {
+              if (estado_conductor|| localStorage.getItem('estado_conductor') === 'true') {
                 // Si el conductor ya tiene un viaje en curso, redirige a /home y muestra el mensaje
                 this.router.navigate(['/home']);
                 this.utilsSvc.presentToast({

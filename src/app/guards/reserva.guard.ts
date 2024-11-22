@@ -25,7 +25,7 @@ export class ReservaGuard implements CanActivate {
           const uid = authState.uid;  // Obtén el UID del authState
           return this.firebaseService.getEstadoReserva(uid).pipe(
             map(estado_reserva => {
-              if (estado_reserva) {
+              if (estado_reserva || localStorage.getItem('estado_pasajero') === 'true') {
                 // Si estado_reserva es true, redirigir al usuario
                 this.router.navigate(['/home']); // Cambia '/otra-pagina' al destino que desees
                 this.utilsSvc.presentToast({ 

@@ -51,45 +51,66 @@ export class MapaboxService {
     }
   }
 
-  async obtenerRuta(mapa: mapboxgl.Map, start: [number, number], end: [number, number]) {
-    // Url de la API de Mapbox
-    const url = mapboxgl.baseApiUrl + `/directions/v5/mapbox/driving/${start[0]},${start[1]};${end[0]},${end[1]}?geometries=geojson&overview=full&access_token=${mapboxgl.accessToken}`;
+ async obtenerRuta(mapa: mapboxgl.Map, start: [number, number], end: [number, number]) {
+  // Url de la API de Mapbox
+  const url = mapboxgl.baseApiUrl + `/directions/v5/mapbox/driving/${start[0]},${start[1]};${end[0]},${end[1]}?geometries=geojson&overview=full&access_token=${mapboxgl.accessToken}`;
 
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      
-      // Agregar la ruta al mapa
-      mapa.addSource('route', {
-        type: 'geojson',
-        data: {
-          type: 'Feature',
-          properties: {},
-          geometry: data.routes[0].geometry
-        }
-      });
-      // Agregar la capa al mapa
-      mapa.addLayer({
-        id: 'route',
-        type: 'line',
-        source: 'route',
-        layout: {
-          'line-join': 'round',
-          'line-cap': 'round'
-        },
-        paint: {
-          'line-color': '#36c6ff',
-          'line-width': 8
-        }
-      });
-      // Agregar marcadores
-      const startMarker = this.crearMarcador(mapa, start,{ color: '#29dbed', draggable: false, pitchAlignment: 'auto' });
-      const endMarker = this.crearMarcador(mapa, end, { color: '#0ded3b', draggable: false, pitchAlignment: 'auto' });
-    } catch (error) {
-      console.error('Error al obtener la ruta:', error);
-      throw error;
-    }
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    // Guardar la ruta en localStorage
+    const routeData = {
+      start,
+      end,
+      geometry: data.routes[0].geometry
+    };
+    localStorage.setItem('mapboxRoute', JSON.stringify(routeData));
+
+    // Agregar la ruta al mapa
+    this.agregarRutaAlMapa(mapa, routeData);
+  } catch (error) {
+    console.error('Error al obtener la ruta:', error);
+    throw error;
   }
+}
+
+// Método para agregar una ruta al mapa
+agregarRutaAlMapa(mapa: mapboxgl.Map, routeData: { start: [number, number], end: [number, number], geometry: any }) {
+  // Verificar si ya existe una capa de ruta y eliminarla
+  if (mapa.getSource('route')) {
+    mapa.removeLayer('route');
+    mapa.removeSource('route');
+  }
+
+  // Agregar la fuente y capa
+  mapa.addSource('route', {
+    type: 'geojson',
+    data: {
+      type: 'Feature',
+      properties: {},
+      geometry: routeData.geometry
+    }
+  });
+
+  mapa.addLayer({
+    id: 'route',
+    type: 'line',
+    source: 'route',
+    layout: {
+      'line-join': 'round',
+      'line-cap': 'round'
+    },
+    paint: {
+      'line-color': '#36c6ff',
+      'line-width': 8
+    }
+  });
+
+  // Agregar marcadores
+  this.crearMarcador(mapa, routeData.start, { color: '#29dbed', draggable: false });
+  this.crearMarcador(mapa, routeData.end, { color: '#0ded3b', draggable: false });
+}
 
   crearMarcador(mapa: mapboxgl.Map, coords: [number, number], opts: mapboxgl.MarkerOptions) {
     return new mapboxgl.Marker(opts).setLngLat(coords).addTo(mapa);

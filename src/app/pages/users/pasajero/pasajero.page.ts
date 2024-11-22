@@ -162,6 +162,7 @@ export class PasajeroPage implements OnInit {
         this.viajeSvc.incrementarReserva(viaje);
         this.fireBaseSvc.updateEstadoToConductorForCurrentUser('pasajero');
         localStorage.setItem('id_viaje', viaje.id_viaje); // Cambia 'idViaje' por 'id_viaje'
+        localStorage.setItem('estado_viaje', viaje.estado);
         
 
         this.utilsSvc.presentToast({

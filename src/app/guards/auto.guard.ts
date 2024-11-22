@@ -20,7 +20,7 @@ export class autoGuard implements CanActivate {
       const userId = user.uid;
       const carsSnapshot = await this.firebaseService.getAutosByUserId(userId);
 
-      if (carsSnapshot && carsSnapshot.length > 0) {
+      if (carsSnapshot && carsSnapshot.length > 0 || localStorage.getItem('numAutos-' + user.uid) === '1') {
         return true;
       } else {
         this.router.navigate(['/registro-vehiculo']);

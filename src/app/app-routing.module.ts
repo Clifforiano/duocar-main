@@ -4,6 +4,7 @@ import { autoGuard } from './guards/auto.guard';
 import { RoleGuard } from './guards/role.guard';
 import { ReservaGuard } from './guards/reserva.guard';
 import { ConductorGuard } from './guards/conductor.guard';
+import { LoginGuard } from './guards/login.guard';
 
 
 const routes: Routes = [
@@ -17,7 +18,9 @@ const routes: Routes = [
 
   {
     path: 'login',
-    loadChildren: () => import('./pages/login-register/login/login.module').then( m => m.LoginPageModule)
+    loadChildren: () => import('./pages/login-register/login/login.module').then( m => m.LoginPageModule),
+    
+
   },
   {
     path: 'register',
