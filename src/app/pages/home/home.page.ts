@@ -3,6 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { Network } from '@capacitor/network';
+import { ViajeService } from 'src/app/services/viaje.service';
 
 @Component({
   selector: 'app-home',
@@ -15,6 +16,7 @@ export class HomePage implements OnInit, OnDestroy {
   utilsSvc = inject(UtilsService);
   firebaseSvc: any = new FirebaseService();
   fireSvc = inject(FirebaseService);
+  viajeSvc= inject(ViajeService);
 
   autos: any;
   isConnected: boolean = false;
@@ -23,6 +25,8 @@ export class HomePage implements OnInit, OnDestroy {
   estadoactual: string = '';
   userName: string = ''; // Variable para almacenar el nombre del usuario
   networkListener: any; // Listener para cambios en la conexión
+  estadoactual2='';
+  viajeid: any;
 
   constructor() { }
 
@@ -38,6 +42,8 @@ export class HomePage implements OnInit, OnDestroy {
     if (this.isConnected) {
       this.getDataFromServer();
     }
+
+    
    
 
     // Escuchar cambios en el estado de la red
@@ -90,7 +96,32 @@ export class HomePage implements OnInit, OnDestroy {
         console.log('Estado de reserva:', localStorage.getItem('estado_pasajero'));
         console.log('Estado actual:', localStorage.getItem('estado'));
         console.log('Autos:', localStorage.getItem('numAutos-' + user.uid));
+        console.log('Pasajeros:', localStorage.getItem('pasajeros'));
+
       }
+
+      if(localStorage.getItem('estado_actual')=='conductor'){
+     
+        this.firebaseSvc.getPendingTripId().subscribe(viajeId => {
+          if (viajeId) {
+            // Si se encontró un viaje pendiente, obtener los pasajeros
+            this.viajeid = viajeId}
+        });
+
+       this.viajeSvc.getEstadoViaje(this.viajeid).subscribe(estado => {
+       
+        this.viajeSvc.getIdsPasajerosDeViaje(this.viajeid).subscribe(pasajeros => {
+          localStorage.setItem('pasajeros', JSON.stringify(pasajeros));
+          //guardar cantidad de pasajeros 
+         
+        })
+      
+       })
+          
+      
+      }
+  
+
 
     });
   }
@@ -100,12 +131,21 @@ export class HomePage implements OnInit, OnDestroy {
     localStorage.removeItem('user');
   }
 
+  obtenerestado(){
+    this.fireSvc.getAuthState().subscribe(user => {
+      if (user) {
+        this.fireSvc.getEstadoOfCurrentUser().subscribe(estado => {
+          this.estadoactual2 = estado;
+        });
+      }
+    })
+  }
   async irViaje() {
 
     const loading = await this.utilsSvc.loading();
     await loading.present();
 
-    switch (localStorage.getItem('estado')) {
+    switch (localStorage.getItem('estado')|| this.estadoactual2) {
       case 'conductor':
         this.utilsSvc.routerLink('/viaje-conductor');
         loading.dismiss();

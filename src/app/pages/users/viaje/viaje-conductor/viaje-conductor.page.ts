@@ -29,6 +29,7 @@ export class ViajeConductorPage implements OnInit {
   direccion_inicio = ""
   direccion_final = ""
   reservas= 0
+  isConnected: boolean = false;
 
   ngOnInit() {
 
@@ -47,24 +48,17 @@ export class ViajeConductorPage implements OnInit {
 
     }
 
+    const pasajeros = localStorage.getItem('pasajeros');
+    if (pasajeros) {
+      this.pasajeros = JSON.parse(pasajeros);
+      this.reservas = this.pasajeros.length
+    }
+    
+
   
 
     // Obtener el ID del viaje pendiente para el usuario autenticado
-    this.firebaseSvc.getPendingTripId().subscribe(viajeId => {
-      if (viajeId) {
-        // Si se encontró un viaje pendiente, obtener los pasajeros
-        this.obtenerPasajerosDeViaje(viajeId);
-        this.viajeid = viajeId
-
-        this.viajeService.obtenerReservas(this.viajeid).subscribe(reservas => {
-          this.reservas = reservas
-        });
-
-      } else {
-        console.log('No hay un viaje pendiente para el usuario autenticado.');
-
-      }
-    });
+ 
   }
 
 
@@ -79,54 +73,7 @@ export class ViajeConductorPage implements OnInit {
   }
 
   // Método para obtener y listar los pasajeros del viaje
-  async obtenerPasajerosDeViaje(viajeId: string) {
-    const loading = await this.utilsSvc.loading();
-    await loading.present();
-
-    // Verificar el estado del viaje antes de continuar
-    this.viajeService.getEstadoViaje(viajeId).subscribe(
-      async estado => {
-        if (estado === 'pendiente') {
-          // Solo proceder a obtener los pasajeros si el viaje está en estado "pendiente"
-          this.viajeService.getIdsPasajerosDeViaje(viajeId).subscribe(
-            ids => {
-              if (ids && ids.length > 0) {
-                this.pasajeros = [];
-                ids.forEach(id => {
-                  // Verificar si el usuario ya está en cache
-                  if (this.cachedUsuarios[id]) {
-                    this.pasajeros.push(this.cachedUsuarios[id]);
-                  } else {
-                    // Si no está en cache, hacer la solicitud y guardarlo en cache
-                    this.viajeService.getUsuarioPorId(id).subscribe(pasajero => {
-                      if (pasajero) {
-                        this.cachedUsuarios[id] = pasajero; // Guardar en cache
-                        this.pasajeros.push(pasajero);
-                      }
-                    });
-                  }
-                });
-              } else {
-                console.log('No hay pasajeros para este viaje.');
-              }
-            },
-            error => {
-              console.error('Error al cargar los IDs de pasajeros:', error);
-            }
-          );
-        } else {
-          console.log('El viaje ya no está en estado pendiente.');
-          this.pasajeros = [];  // Limpiar la lista de pasajeros si el viaje no está pendiente
-        }
-        loading.dismiss();
-      },
-      error => {
-        console.error('Error al obtener el estado del viaje:', error);
-        loading.dismiss();
-      }
-    );
-  }
-
+ 
 
   async cancelarViaje() {
     // Actualizar historial y estado del viaje

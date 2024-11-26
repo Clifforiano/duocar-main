@@ -505,4 +505,13 @@ agregarAlHistorialPorId(viajeId: string): Observable<void> {
     ).subscribe();
   });
 }
+
+//obtener estado vieja actual por id viaje 
+
+obtenerEstadoViejaPorId(idViaje: string): Observable<string> {
+  return this.firestore.collection('viajes').doc(idViaje).valueChanges().pipe(
+    map((viajes: any) => viajes?.estado || '')
+  );
+}
+
 }

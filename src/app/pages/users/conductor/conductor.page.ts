@@ -203,7 +203,7 @@ export class ConductorPage implements OnInit {
         localStorage.setItem('viajeconductor', JSON.stringify(this.nuevoViaje));
         this.fireBaseSvc.updateEstadoToConductorForCurrentUser('conductor');
         this.fireBaseSvc.updateEstadoConductor(this.fireBaseSvc.idusuario(), true);
-        this.utilsSvc.routerLink('/home');
+        this.utilsSvc.routerLink('/viaje-conductor');
 
         this.utilsSvc.presentToast({
           message: 'Viaje creado con exito',

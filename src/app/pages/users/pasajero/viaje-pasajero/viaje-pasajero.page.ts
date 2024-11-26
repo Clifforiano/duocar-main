@@ -25,29 +25,44 @@ export class ViajePasajeroPage implements OnInit, AfterViewInit {
   inicio: [number, number]
   fin: [number, number]
   estado_viaje='';
+  estadoactual2='';
+  isConnected: boolean = false;
+
  
-  ngOnInit() {
+  async ngOnInit() {
     this.id_viaje = localStorage.getItem('id_viaje') || '';
     console.log(this.id_viaje);
     this.estado_viaje= localStorage.getItem('estado_viaje') || '';
 
-  this.getEstado();    
+    this.firebaseService.obtenerEstadoViejaPorId(localStorage.getItem('id_viaje')).subscribe((estado) => {
+     console.log(estado);
+     if (estado!=='pendiente') {
+      this.utilsSvc.presentToast({
+        message: 'Viaje finalizado con exito.',
+        duration: 1500,
+        color: 'success',
+        position: 'middle',
+        icon: 'checkmark-circle-outline',
+      });
+      this.utilsSvc.routerLink('home');
+      this.firebaseService.updateEstadoPasajero(this.firebaseService.getCurrentUserId(), 'neutro');
+      this.firebaseService.cambiarEstadoReserva(this.firebaseService.getCurrentUserId(), false);
+      localStorage.setItem('estado_pasajero', 'false');
+      localStorage.setItem('estado', 'neutro');
+      
+
+     }
+
+
+    });
+    
+  
+
 
   }
 
- getEstado(){
+
  
-    if (this.estado_viaje !== 'pendiente') {
-      this.utilsSvc.presentToast({
-        message: 'El viaje fue cancelado por el conductor.',
-        color: 'danger',
-        position: 'middle',
-        duration: 2000,
-        icon: 'close-circle-outline',
-      })
-      this.utilsSvc.routerLink('/home');
-    }
- }
 
   ngAfterViewInit() {
     // Llamar al método buildMap después de que la vista haya sido cargada
