@@ -1,0 +1,28 @@
+<app-c-header [titulo]="'historial'"></app-c-header>
+
+<ion-content>
+  <!-- Muestra el historial si existen datos -->
+  <ion-list *ngIf="(historial$ | async)?.length > 0; else noHistorial">
+    <ion-item *ngFor="let viaje of historial$ | async">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{ viaje.nomconductor }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p><strong>Fecha:</strong> {{ viaje.fecha }}</p>
+          <p><strong>Precio:</strong> ${{ viaje.precio }}</p>
+          <p><strong>Desde:</strong> {{ viaje.dirrecionInicio }} <strong>Hasta:</strong> {{ viaje.dirrecionFinal }}</p>
+          <p><strong>Hora de Inicio:</strong> {{ viaje.horaInicio }} <strong>Hora de Finalización:</strong> {{ viaje.horaFinal }}</p>
+          <p><strong>Estado:</strong> {{ viaje.estado }}</p>
+        </ion-card-content>
+      </ion-card>
+    </ion-item>
+  </ion-list>
+
+  <!-- Mensaje cuando no hay historial -->
+  <ng-template #noHistorial>
+    <ion-text color="medium" class="ion-text-center">
+      <h2>Sin datos en el historial</h2>
+    </ion-text>
+  </ng-template>
+</ion-content>

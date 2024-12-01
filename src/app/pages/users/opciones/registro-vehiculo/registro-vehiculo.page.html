@@ -1,0 +1,70 @@
+<app-c-header></app-c-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title class="ion-text-center">Completa la Información del Auto</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <form (ngSubmit)="onSubmit()" [formGroup]="autoForm">
+        <ion-item>
+          <ion-label position="floating">Patente</ion-label>
+          <ion-input type="text" formControlName="patente" required></ion-input>
+        </ion-item>
+        <div *ngIf="autoForm.get('patente')?.invalid && autoForm.get('patente')?.touched">
+          <ion-text color="danger"  class="centrar_notificacion">
+            <ng-container class="centrar_notificacion" *ngIf="autoForm.get('patente')?.errors?.['required']" >La patente es requerida.</ng-container>
+          </ion-text>
+        </div>
+
+        <ion-item>
+          <ion-label position="floating">Marca</ion-label>
+          <ion-input type="text" formControlName="marca" required></ion-input>
+        </ion-item>
+        <div *ngIf="autoForm.get('marca')?.invalid && autoForm.get('marca')?.touched">
+          <ion-text color="danger"  class="centrar_notificacion">
+            <ng-container class="centrar_notificacion" *ngIf="autoForm.get('marca')?.errors?.['required']" >La marca es requerido.</ng-container>
+          </ion-text>
+        </div>
+
+        <ion-item>
+          <ion-label position="floating">Modelo</ion-label>
+          <ion-input type="text" formControlName="modelo" required></ion-input>
+        </ion-item>
+        <div *ngIf="autoForm.get('modelo')?.invalid && autoForm.get('modelo')?.touched">
+          <ion-text color="danger"  class="centrar_notificacion">
+            <ng-container class="centrar_notificacion" *ngIf="autoForm.get('modelo')?.errors?.['required']" >El modelo es requerido.</ng-container>
+          </ion-text>
+        </div>
+
+        <ion-item>
+          <ion-label position="floating">Color</ion-label>
+          <ion-input type="text" formControlName="color" required></ion-input>
+        </ion-item>
+
+        <div *ngIf="autoForm.get('color')?.invalid && autoForm.get('color')?.touched">
+          <ion-text color="danger"  class="centrar_notificacion">
+            <ng-container class="centrar_notificacion" *ngIf="autoForm.get('color')?.errors?.['required']" >El color es requerido.</ng-container>
+          </ion-text>
+        </div>
+
+        <ion-item>
+          <ion-label position="floating">Número de Asiento</ion-label>
+          <ion-input type="number" formControlName="nroasiento" required></ion-input>
+        </ion-item>
+        <div *ngIf="autoForm.get('nroasiento')?.invalid && autoForm.get('nroasiento')?.touched">
+          <ion-text color="danger"  class="centrar_notificacion">
+            <ng-container class="centrar_notificacion" *ngIf="autoForm.get('nroasiento')?.errors?.['required'] " >El asiento es requerido.</ng-container>
+            <ng-container class="centrar_notificacion" *ngIf="autoForm.get('nroasiento')?.errors?.['min']" >El asiento debe ser mayor a 0.</ng-container>
+            <ng-container class="centrar_notificacion" *ngIf="autoForm.get('nroasiento')?.errors?.['max']" >El asiento debe ser menor a 5.</ng-container>
+          </ion-text>
+        </div>
+
+        <ion-button expand="full" type="submit" [disabled]="autoForm.invalid" class="ion-padding" routerLink="/home">
+          Registrar Auto
+        </ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

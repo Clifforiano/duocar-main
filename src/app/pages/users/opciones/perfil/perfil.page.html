@@ -1,0 +1,44 @@
+<app-c-header [titulo]="'Mi Perfil'"></app-c-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title class="ion-text-center">Información Personal</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-icon name="person"></ion-icon>
+            <ion-label> Tu nombre: {{ userName }}</ion-label>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-icon name="person"></ion-icon>
+            <ion-label> Tu apellido: {{ userapellido }}</ion-label>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-icon name="mail"></ion-icon>
+            <ion-label> Tu correo: {{ userMail }}</ion-label>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+        <!-- Campo para Nombre -->
+
+     <ion-card-title class="ion-text-center">Opciones de Perfil</ion-card-title>
+
+      <ion-router-link routerLink="/recuperar-clave" color="dark" class="custom-router-link ion-padding">       
+        <span>Cambiar clave</span>
+        <ion-icon name="chevron-forward" size="large"></ion-icon>
+      </ion-router-link>  
+    </ion-card-content>
+  </ion-card>
+</ion-content>

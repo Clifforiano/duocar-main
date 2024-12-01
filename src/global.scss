@@ -1,0 +1,70 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+@import 'mapbox-gl/dist/mapbox-gl.css';
+
+
+/**
+ * Ionic Dark Mode
+ * -----------------------------------------------------
+ * For more info, please see:
+ * https://ionicframework.com/docs/theming/dark-mode
+ */
+
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
+/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+@import "@ionic/angular/css/palettes/dark.system.css";
+
+
+
+.custom-router-link {
+    display: flex;
+    align-items: center; /* Alinea el ícono y el texto verticalmente en el centro */
+    margin-bottom: 16px; /* Espacio entre cada ítem */
+    text-decoration: none; /* Elimina el subrayado del enlace */
+  }
+  .custom-router-link ion-icon {
+    margin-right: 12px; /* Espacio entre el ícono y el texto */
+    font-size: 24px; /* Tamaño del ícono; ajusta según sea necesario */
+  }
+  
+  .custom-router-link span {
+    font-size: 16px; /* Tamaño del texto; ajusta según sea necesario */
+    font-weight: bold; /* Aplica negrita al texto */
+    display: inline-block; /* Permite ajustar la posición vertical del texto */
+    vertical-align: middle; /* Alinea el texto verticalmente al medio del ícono */
+    line-height: 1; /* Alinea el texto verticalmente con el ícono */
+    position: relative; /* Permite ajustar la posición vertical del texto */
+    top: -11px; /* Ajusta la posición vertical del texto; aumenta o disminuye este valor para alinear con el ícono */
+  }
+  
+.centrar_notificacion {
+    text-align: center;
+}
+
+:root {
+  --ion-color-scheme: light;
+}

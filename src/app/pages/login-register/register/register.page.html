@@ -1,0 +1,81 @@
+
+
+<app-c-header [titulo]="'Crear Usuario'" [home]="false"></app-c-header>
+
+
+<ion-content>
+
+
+  <div class="ion-text-center">
+    <ion-img style="height: 250px; padding-top: 20px;"
+      src="../../../assets/image/logo.png"
+      alt="se callo la wea"
+    ></ion-img>
+  </div>
+
+
+<ion-text color="primary" class="centrar_notificacion">
+  <h3>Formulario de registro</h3>
+</ion-text>
+
+
+<ion-card>
+<ion-card-content>
+
+
+  <form [formGroup]="formulario_register">
+
+ 
+
+    <ion-item>
+      <ion-input label="Nombre:" labelPlacement="floating" formControlName="nombre"></ion-input>
+    </ion-item>
+    <div *ngIf="formulario_register.get('nombre')?.touched && formulario_register.get('nombre')?.invalid">
+      <ion-text color="danger"  class="centrar_notificacion">
+        <ng-container class="centrar_notificacion" *ngIf="formulario_register.get('nombre')?.errors?.['required']" >El nombre es requerido.</ng-container>
+        <ng-container class="centrar_notificacion" *ngIf="formulario_register.get('nombre')?.errors?.['minlength']" >El nombre debe tener al menos 3 caracteres.</ng-container>
+        <ng-container class="centrar_notificacion" *ngIf="formulario_register.get('nombre')?.errors?.['maxlength']" >El nombre debe tener como maximo 10 caracteres.</ng-container>
+        <ng-container class="centrar_notificacion" *ngIf="formulario_register.get('nombre')?.errors?.['pattern']" >El nombre solo puede contener letras sin espacios.</ng-container>
+      </ion-text>
+    </div>
+
+    <ion-item>
+      <ion-input label="Apellido:" labelPlacement="floating" formControlName="apellido" ></ion-input>
+    </ion-item>
+    <div *ngIf="formulario_register.get('apellido')?.touched && formulario_register.get('apellido')?.invalid">
+      <ion-text color="danger"  class="centrar_notificacion">
+        <ng-container class="centrar_notificacion" *ngIf="formulario_register.get('apellido')?.errors?.['required']" >El apellido es requerido.</ng-container>
+        <ng-container class="centrar_notificacion" *ngIf="formulario_register.get('apellido')?.errors?.['minlength']" >El apellido debe tener al menos 3 caracteres.</ng-container>
+        <ng-container class="centrar_notificacion" *ngIf="formulario_register.get('apellido')?.errors?.['maxlength']" >El apellido debe tener como maximo 10 caracteres.</ng-container>
+        <ng-container class="centrar_notificacion" *ngIf="formulario_register.get('apellido')?.errors?.['pattern']" >El apellido solo puede contener letras sin espacios.</ng-container>
+      </ion-text>
+    </div>
+
+  <ion-item>
+    <ion-input label="Email:" labelPlacement="floating" formControlName="email"></ion-input>
+  </ion-item>
+      <div *ngIf="formulario_register.get('email')?.touched && formulario_register.get('email')?.invalid">
+      <ion-text color="danger"  class="centrar_notificacion">
+        <ng-container class="centrar_notificacion" *ngIf="formulario_register.get('email')?.errors?.['required']" >El email es requerido.</ng-container>
+        <ng-container class="centrar_notificacion" *ngIf="formulario_register.get('email')?.errors?.['pattern']" >El email no es valido.</ng-container>
+      </ion-text>
+    </div>
+
+    <ion-item>
+      <ion-input label="Contraseña:" labelPlacement="floating" formControlName="password" [type]="hide ? 'password' : 'text'"></ion-input>
+      <ion-icon slot="end" [name]="hide ? 'eye-off' : 'eye'" (click)="hide = !hide"></ion-icon>
+    </ion-item>
+
+  <div *ngIf="formulario_register.get('password')?.touched && formulario_register.get('password')?.invalid">
+    <ion-text color="danger"  class="centrar_notificacion">
+      <ng-container class="centrar_notificacion" *ngIf="formulario_register.get('password')?.errors?.['required']" >La contraseña es requerida.</ng-container>
+      <ng-container class="centrar_notificacion" *ngIf="formulario_register.get('password')?.errors?.['minlength']" >La contraseña debe tener al menos 6 caracteres.</ng-container>
+      <ng-container class="centrar_notificacion" *ngIf="formulario_register.get('password')?.errors?.['maxlength']" >La contraseña debe tener como maximo 10 caracteres.</ng-container>
+    </ion-text>
+  </div>
+
+
+    <ion-button class="ion-padding" expand="block"  (click)="registrar()" >Registrarse</ion-button>
+ 
+
+</form>

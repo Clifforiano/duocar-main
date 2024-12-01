@@ -1,0 +1,116 @@
+<ion-menu contentId="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <div class="ion-text-left ion-padding">
+        <h1>{{userName}}</h1>
+        <ion-router-link routerLink="/perfil">
+          Editar perfil
+        </ion-router-link>
+      </div>
+    </ion-toolbar>
+  </ion-header>
+
+  
+    <ion-content>
+      <ion-grid>
+
+        <ion-row>
+          <ion-col>
+            <ion-item lines="none">
+              <ion-icon name="list" slot="start" routerLink="/historial" size="large"></ion-icon>
+              <ion-label routerLink="/historial">Historial</ion-label >
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-item lines="none">
+              <ion-icon name="log-out-outline" slot="start" size="large" (click)="signOut()"></ion-icon>
+              <ion-label (click)="signOut()">Cerrar Sesion</ion-label>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        
+       
+      </ion-grid>
+    </ion-content>
+  </ion-menu>
+  
+
+<div class="ion-page" id="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>DuoCar</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+<div class="ion-page" id="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>DuoCar</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+
+
+  <ion-content >
+    <div class="ion-padding">
+      <h2>Bienvenido a DuoCar</h2>
+      <p>Tu compañero ideal para viajar. Elige entre conducir o ser pasajero y disfruta de la experiencia.</p>
+      
+      <img src="../../../assets/image/toreto.jpg" alt="Bienvenido a DuoCar" style="width: 100%; border-radius: 8px;">
+    
+
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Promoción</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            ¡Reserva tu viaje hoy y recibe un 15% de descuento en tu siguiente viaje!
+          </ion-card-content>
+        </ion-card>
+
+
+        
+
+        <div>
+
+
+
+          <ion-tabs slot="bottom">
+            <ion-tab-bar>
+
+              
+
+              <ion-tab-button routerLink="/conductor">
+                <ion-icon name="car"></ion-icon>
+                Conducir
+              </ion-tab-button>
+
+
+ 
+              <ion-tab-button (click)="irViaje()">
+                <ion-icon name="navigate-circle"></ion-icon>
+                Tu viaje actual
+              </ion-tab-button>
+
+ 
+        
+              <ion-tab-button routerLink="/pasajero">
+                <ion-icon name="person"></ion-icon>
+                Viajar
+              </ion-tab-button>
+
+          
+
+            </ion-tab-bar>
+          </ion-tabs>
+        </div>
+
+</div>

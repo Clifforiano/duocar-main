@@ -1,0 +1,111 @@
+  <app-c-header [titulo]="'Reservar'" [home]="false"></app-c-header>
+
+  <ion-content padding>
+      <ion-grid>
+        <!-- Primer Elemento: ion-select -->
+    
+    <ion-card>
+        <ion-card-header>
+            <ion-card-title class="ion-text-center">Buscar Viaje</ion-card-title>
+        </ion-card-header>
+        <form [formGroup]="busquedaForm">
+          <!-- Input para la dirección de inicio -->
+          <ion-input
+            class="ion-padding"
+            placeholder="Ingrese su punto de partida..."
+            [value]="direccionInicio"
+            (ionInput)="onSearch($event, 'inicio')"
+            formControlName="inicio"
+          >
+            <ion-icon slot="end" name="pin" size="large"></ion-icon> <!-- Añadido el evento click aquí -->
+          </ion-input>
+      
+          <!-- Lista de resultados para la dirección de inicio -->
+          <ion-list *ngIf="searchResultsInicio.length > 0">
+            <ion-item *ngFor="let result of searchResultsInicio" (click)="onSelectResult(result, 'inicio')">
+              {{ result.display_name || result.place_name }}
+            </ion-item>
+          </ion-list>
+      
+        
+          
+          <!-- Input para la dirección de fin -->
+          <ion-input
+            class="ion-padding"
+            placeholder="Ingrese su destino..."
+            [value]="direccionFin"
+            (ionInput)="onSearch($event, 'fin')"
+            formControlName="fin"
+          ><ion-icon slot="end" name="home" size="large"></ion-icon></ion-input>
+      
+          <!-- Lista de resultados para la dirección de fin -->
+          <ion-list *ngIf="searchResultsFin.length > 0">
+            <ion-item *ngFor="let result of searchResultsFin" (click)="onSelectResult(result, 'fin')">
+              {{ result.display_name || result.place_name }}
+            </ion-item>
+          </ion-list>
+    
+          
+        
+      
+          <ion-button (click)="buscar()" expand="block" class="ion-padding" [disabled]="!busquedaForm.valid || !direccionInicioSeleccionada"  >
+            Buscar
+          </ion-button>
+        </form>
+      </ion-card>
+      
+
+
+        <!-- Título: Viajes disponibles -->
+        <ion-row>
+          <ion-col size="12" class="ion-text-center">
+            <ion-title>Viajes disponibles</ion-title>
+          </ion-col>
+        </ion-row>
+
+        <!-- Lista de Tarjetas -->
+      <!-- Lista de Tarjetas -->
+      <ion-row>
+        <ion-col size="12">
+          <div class="scrollable-container">
+            <ion-card *ngFor="let viaje of viajesDisponibles ">
+              <ion-card-header>
+                <ion-card-title class="ion-text-center"><h4>Su conductor será:</h4> {{ viaje.nom_conductor }}</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <h2>Precio: ${{ viaje.precio }}</h2>
+                <div *ngFor="let auto of viaje.autos">
+                 
+                  
+                  <!-- Selector para asientos -->
+                
+                  
+                  <h2>Automóvil: {{ auto.marca }} {{ auto.modelo }} {{ auto.color }}</h2>
+                  <h2>Fecha: {{ viaje.fecha || 'No especificada' }}</h2>
+                  <h2>Hora partida: {{ viaje.horaInicio }}</h2>
+          
+
+                  <h2>Dirección de partida: {{ viaje.dirrecionInicio }}</h2>
+                  <h2>Dirección de llegada: {{ viaje.dirrecionFinal }}</h2>
+                  <h2>Asientos disponibles:{{ viaje.reservas }}/{{viaje.autos[0].nroasiento}}</h2>
+
+                </div>
+
+              </ion-card-content>
+              <ion-card-content>
+
+
+
+      
+                  <ion-button expand="block" (click)="reservar(viaje)" >Reservar </ion-button>
+              
+              </ion-card-content>
+            </ion-card>
+          </div>
+        </ion-col>
+      </ion-row>
+      
+
+      </ion-grid>
+
+    </ion-content>
